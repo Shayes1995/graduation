@@ -1,38 +1,36 @@
 import React, { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { db } from '../../firebase/configfb';
+import { doc, setDoc } from 'firebase/firestore';
 
-const Logincomponent = () => {
+const Registercomponent = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
     const [error, setError] = useState("");
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const auth = getAuth();
 
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (userDoc.exists()) {
-                const role = userDoc.data().role;
 
-                if (role === 'admin') {
-                    navigate('/find-talent');
-                } else {
-                    navigate('/my-page');
-                }
+            await setDoc(doc(db, 'users', user.uid), {
+                id: user.uid,
+                name,
+                email,
+                role: 'user', // Default role is 'user'
+                bio: '',
+                cvUrl: '',
+                hashtags: [],
+                createdAt: new Date(),
+            });
 
-                setError("");
-            } else {
-                setError("User document does not exist");
-            }
+            setError("");
         } catch (error) {
-            setError("Invalid email or password");
+            setError("Error creating account");
         }
     };
 
@@ -41,8 +39,12 @@ const Logincomponent = () => {
             <div className="container">
                 <div className="row">
                     <div className="col-md-6">
-                        <h2>Login</h2>
+                        <h2>Register</h2>
                         <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label>Name</label>
+                                <input type="text" className="form-control" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+                            </div>
                             <div className="form-group">
                                 <label>Email</label>
                                 <input type="email" className="form-control" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -52,7 +54,7 @@ const Logincomponent = () => {
                                 <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                             </div>
                             {error && <p style={{ color: 'red' }}>{error}</p>}
-                            <button type="submit" className="btn btn-primary">Login</button>
+                            <button type="submit" className="btn btn-primary">Register</button>
                         </form>
                     </div>
                 </div>
@@ -61,4 +63,4 @@ const Logincomponent = () => {
     );
 };
 
-export default Logincomponent;
+export default Registercomponent;

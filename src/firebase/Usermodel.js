@@ -4,4 +4,8 @@ export const Usermodel = {
     email: "string",
     password: "string",
     createdAt: "timestamp",
+    role: "string", // 'admin' or 'user'
+    bio: "string",
+    cvUrl: "string",
+    hashtags: ["string"],
 };

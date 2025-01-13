@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, doc, setDoc, getDocs } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -9,36 +10,56 @@ const firebaseConfig = {
     storageBucket: "awbank-f9def.firebasestorage.app",
     messagingSenderId: "49742667365",
     appId: "1:49742667365:web:882dc3b87774ca79a6b08c"
-  };
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-const createUsersCollection = async () => {
+const createAdminUser = async () => {
+    const adminEmail = "Admin@test.com";
+    const adminPassword = "Admin123";
+    const adminDocRef = doc(db, "admins", "admin");
+
     try {
-        //använd getDocs för att kolla collectionen i vår db om "users" finns
-        const usersSnapshot = await getDocs(collection(db, "users"));
-        if (usersSnapshot.empty) {
-            console.log("Creating");
+        const adminDoc = await getDoc(adminDocRef);
+        if (!adminDoc.exists()) {
+            try {
+                // Try to sign in the admin user
+                await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
+                console.log("✅ Admin user signed in!");
+            } catch (signInError) {
+                if (signInError.code === 'auth/user-not-found') {
+                    // Create admin user in Firebase Authentication
+                    const userCredential = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
+                    const user = userCredential.user;
 
-            await setDoc(doc(db, "users", "sampleUser"), {
-                id: "1",
-                name: "John Doe",
-                email: "john.doe@example.com",
-                password: "password123",
-                createdAt: new Date(),
-            });
+                    // Add admin user to Firestore
+                    await setDoc(adminDocRef, {
+                        id: user.uid,
+                        name: "Admin",
+                        email: adminEmail,
+                        role: "admin",
+                        bio: "",
+                        cvUrl: "",
+                        hashtags: [],
+                        createdAt: new Date(),
+                    });
 
-            console.log("✅ 'users' collection created!");
+                    console.log("✅ Admin user created!");
+                } else {
+                    console.error("❌ Error signing in admin user:", signInError);
+                }
+            }
         } else {
-            console.log("✅ 'users' collection already exists!");
+            console.log("✅ Admin user already exists in Firestore!");
         }
     } catch (error) {
-        console.error("❌ Error creating 'users' collection:", error);
+        console.error("❌ Error creating admin user:", error);
     }
 };
 
 // Run the function
-createUsersCollection();
+createAdminUser();
 
-export { db, app };
+export { db, app, auth };

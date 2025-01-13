@@ -3,7 +3,7 @@ import contactBlack from './contact-black.svg';
 
 const Navbar = () => {
   return (
-    <header className="py-3 mb-4 border-bottom">
+    <header className="py-3 mb-4">
       <div className="container">
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between">
           <div className="col-md-3 mb-2 mb-md-0">
@@ -22,7 +22,7 @@ const Navbar = () => {
           </ul>
 
           <div className="col-md-3 text-end">
-            <a href="/" className="d-inline-flex link-body-emphasis text-decoration-none">
+            <a href="/login" className="d-inline-flex link-body-emphasis text-decoration-none">
               <img src={contactBlack} alt="Contact Black" width="40" height="32" />
             </a>
           </div>

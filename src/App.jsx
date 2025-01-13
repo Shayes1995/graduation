@@ -1,4 +1,5 @@
 import React from 'react'
+import 'bootstrap/dist/css/bootstrap.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Rootlayout from './rootlayout/Rootlayout'
 import Login from './pages/Login'

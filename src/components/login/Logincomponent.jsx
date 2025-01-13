@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { db } from '../../firebase/configfb'
-import {Sig, getAuth } from 'firebase/auth'
+import {signInWithEmailAndPassword, getAuth } from 'firebase/auth'
 
 const Logincomponent = () => {
 

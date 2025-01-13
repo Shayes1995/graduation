@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { db } from '../../firebase/configfb'
-import {Sig, getAuth } from 'firebase/auth'
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
 
 const Logincomponent = () => {
 
@@ -12,14 +12,14 @@ const Logincomponent = () => {
         e.preventDefault();
         const auth = getAuth();
         const db = getFirestore();
-    
+
         if (!email) {
-          setEmailError(true);
-          return;
+            setEmailError(true);
+            return;
         }
         if (!password) {
-          setPasswordError(true);
-          return;
+            setPasswordError(true);
+            return;
         }
     }
 

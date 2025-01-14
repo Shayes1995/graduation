@@ -4,6 +4,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../firebase/configfb';
 import { useNavigate } from 'react-router';
 import './Adminlogin.css';
+import Cookies from 'js-cookie';
 
 const Adminlogin = () => {
     const [email, setEmail] = useState('');
@@ -14,7 +15,6 @@ const Adminlogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const auth = getAuth();
-        const adminUid = localStorage.getItem('adminUid');
 
         if (!email || !password) {
             setError('Please enter both email and password');
@@ -22,11 +22,9 @@ const Adminlogin = () => {
         }
 
         try {
-
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             const uid = user.uid;
-
 
             const adminsRef = collection(db, 'admins');
             const q = query(adminsRef, where('email', '==', email));
@@ -41,11 +39,8 @@ const Adminlogin = () => {
                 };
 
                 setError('');
-                alert('Admin login successful!');
-                localStorage.setItem('admin', JSON.stringify(adminWithUID));
-                navigate('/admin/add-posts');
-
-
+                Cookies.set('admin', JSON.stringify(adminWithUID), { expires: 7 }); // Set cookie for 7 days
+                navigate('/'); // Redirect to home page
             } else {
                 setError('Admin does not exist in the database.');
             }

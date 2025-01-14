@@ -10,6 +10,7 @@ import Admin from './pages/Admin';
 import Register from './pages/Register';
 import AdminAddPosts from './pages/AdminAddPosts';
 import MyPage from './pages/MyPage';
+import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 
 const App = () => {
   const router = createBrowserRouter([

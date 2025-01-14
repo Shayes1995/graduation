@@ -1,13 +1,13 @@
-import React from 'react'
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import "./index.css";
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Rootlayout from './rootlayout/Rootlayout'
-import Login from './pages/Login'
-import Home from './pages/Home'
-import { db } from './firebase/configfb'
-import Admin from './pages/Admin'
-import Register from './pages/Register'
+import './index.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Rootlayout from './rootlayout/Rootlayout';
+import Login from './pages/Login';
+import Home from './pages/Home';
+import { db } from './firebase/configfb';
+import Admin from './pages/Admin';
+import Register from './pages/Register';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -20,27 +20,25 @@ const App = () => {
           element: <Home />
         },
         {
-          path: '/login',
+          path: 'login', // Nu är 'login' en relativ path
           element: <Login />
         },
         {
-          path: '/admin',
+          path: 'admin', // Nu är 'admin' en relativ path
           element: <Admin />
         },
         {
-          path: '/register',
+          path: 'register', // Nu är 'register' en relativ path
           element: <Register />
         }
-
-
       ]
     }
-  ])
+  ]);
   return (
     <div>
-      < RouterProvider router={router} />
+      <RouterProvider router={router} />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

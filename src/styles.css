@@ -5,3 +5,7 @@
     justify-content: center;
     align-items: center;
 }
+
+.nav .nav-link:hover {
+    color: #006400 !important;
+  }

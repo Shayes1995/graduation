@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../firebase/configfb';
 import { useNavigate } from 'react-router';
+import './Adminlogin.css';
 
 const Adminlogin = () => {
     const [email, setEmail] = useState('');
@@ -54,7 +55,7 @@ const Adminlogin = () => {
     };
 
     return (
-        <div>
+        <div className='main-login'>
             <div className="container">
                 <div className="row">
                     <div className="col-md-6">

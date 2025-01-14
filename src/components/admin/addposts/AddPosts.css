@@ -1,0 +1,67 @@
+.addpostspage-container {
+    display: flex;
+    justify-content: center;
+}
+
+.df-rw {
+    display: flex;
+}
+
+.df-rw-comp {
+    display: flex;
+    width: 100%;
+}
+
+form {
+
+    width: 1000px;
+    background-color: white;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+.box-form-post {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 1rem;
+}
+
+.group {
+    margin: 0;
+    padding: 0;
+}
+
+.group li {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    margin-top: .5rem;
+    padding: 0;
+}
+
+li input {
+    height: 2rem;
+}
+
+li button {
+    margin: 0 0 0 .5rem;
+    height: 2rem;
+    width: 6rem;
+    text-align: center;
+    font-size: 12px;
+    background-color: red;
+}
+
+label {
+    font-weight: 600;
+}
+
+.small-input {
+    margin-left: .5rem;
+}
+
+.small-input:first-child {
+    margin: 0;
+}

@@ -40,6 +40,7 @@ const Adminlogin = () => {
 
                 setError('');
                 Cookies.set('admin', JSON.stringify(adminWithUID), { expires: 7 }); // Set cookie for 7 days
+                localStorage.setItem('admin', JSON.stringify(adminWithUID));
                 navigate('/'); // Redirect to home page
             } else {
                 setError('Admin does not exist in the database.');

@@ -32,7 +32,7 @@ const Navbar = () => {
             <li><Link to="#" className="nav-link px-3">För företag</Link></li>
             <li><Link to="#" className="nav-link px-3">Om oss</Link></li>
             <li><Link to="#" className="nav-link px-3">Kontakt</Link></li>
-            {user && <li><Link to="/min-sida" className="nav-link px-3">Min sida</Link></li>}
+            {user && <li><Link to="/my-page" className="nav-link px-3">MyPage</Link></li>}
             {admin && <li><Link to="/admin/add-posts" className="nav-link px-3">Add job</Link></li>}
           </ul>
 

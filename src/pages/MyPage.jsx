@@ -1,12 +1,12 @@
 import React from 'react';
 
-const MinSida = () => {
+const MyPage = () => {
     return (
         <div>
-            <h1>Min sida</h1>
+            <h1>My Page</h1>
             <p>Welcome to your personal page!</p>
         </div>
     );
 };
 
-export default MinSida;
+export default MyPage;

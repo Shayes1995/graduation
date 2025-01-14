@@ -3,12 +3,12 @@ import { getFirestore, collection, doc, setDoc, getDocs } from "firebase/firesto
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyAiWoBDTGGzCQ58pZI3m1m9O20qBXSrBfs",
-    authDomain: "awbank-21193.firebaseapp.com",
-    projectId: "awbank-21193",
-    storageBucket: "awbank-21193.firebasestorage.app",
-    messagingSenderId: "236986963840",
-    appId: "1:236986963840:web:3524d8e8b46e64079c5365"
+    apiKey: "AIzaSyBWHKmhpnPU29eJf5Xy-qDD2dfaSU913FA",
+    authDomain: "awbank-f9def.firebaseapp.com",
+    projectId: "awbank-f9def",
+    storageBucket: "awbank-f9def.firebasestorage.app",
+    messagingSenderId: "49742667365",
+    appId: "1:49742667365:web:882dc3b87774ca79a6b08c"
   };
 
 const app = initializeApp(firebaseConfig);

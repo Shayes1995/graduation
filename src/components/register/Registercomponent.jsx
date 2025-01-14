@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { db } from '../../firebase/configfb';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import './Registercomponent.css';
 
 const RegisterComponent = () => {
     const [formData, setFormData] = useState({
@@ -58,126 +59,51 @@ const RegisterComponent = () => {
     return (
         <div className="register-container">
             <div className="form-container">
-                <h2>Register User</h2>
+                <h2>Registrera dig här</h2>
                 <form onSubmit={handleSubmit}>
-                    {/* Förnamn */}
-                    <div className="input-group">
-                        <label htmlFor="firstName">First Name</label>
-                        <input
-                            type="text"
-                            id="firstName"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            required
-                        />
+                    <div className="d-rw">
+                        <div className="input-group rw-input">
+                            <label htmlFor="firstName">Förnamn</label>
+                            <input type="text"
+                                id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} required />
+                        </div>
+                        <div className="input-group rw-input">
+                            <label htmlFor="lastName">Efternamn</label>
+                            <input type="text" id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} required />
+                        </div>
                     </div>
-
-                    {/* Efternamn */}
                     <div className="input-group">
-                        <label htmlFor="lastName">Last Name</label>
-                        <input
-                            type="text"
-                            id="lastName"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            required
-                        />
+                        <label htmlFor="city">Stad</label>
+                        <input type="text" id="city" name="city" value={formData.city} onChange={handleChange} required />
                     </div>
-
-                    {/* Stad */}
-                    <div className="input-group">
-                        <label htmlFor="city">City</label>
-                        <input
-                            type="text"
-                            id="city"
-                            name="city"
-                            value={formData.city}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    {/* Adress */}
                     <div className="input-group">
                         <label htmlFor="adress">Adress</label>
-                        <input
-                            type="text"
-                            id="adress"
-                            name="adress"
-                            value={formData.adress}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="text" id="adress" name="adress" value={formData.adress} onChange={handleChange} required />
                     </div>
-
-                    {/* Postnummer */}
                     <div className="input-group">
-                        <label htmlFor="postalCode">Postal Code</label>
-                        <input
-                            type="text"
-                            id="postalCode"
-                            name="postalCode"
-                            value={formData.postalCode}
-                            onChange={handleChange}
-                            required
-                        />
+                        <label htmlFor="postalCode">Postnummer</label>
+                        <input type="text" id="postalCode" name="postalCode" value={formData.postalCode} onChange={handleChange} required />
                     </div>
-
-                    {/* Telefonnummer */}
                     <div className="input-group">
-                        <label htmlFor="phoneNumber">Phone Number</label>
-                        <input
-                            type="text"
-                            id="phoneNumber"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleChange}
-                            required
-                        />
+                        <label htmlFor="phoneNumber">Telefonnummer</label>
+                        <input type="text" id="phoneNumber" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
                     </div>
-
-                    {/* Email */}
                     <div className="input-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
+                        <label htmlFor="email">E-post</label>
+                        <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
+                    </div>
+                    <div className="d-rw">
+                        <div className="input-group rw-input">
+                            <label htmlFor="password">Lösenord</label>
+                            <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
+                        </div>
+                        <div className="input-group rw-input">
+                            <label htmlFor="confirmPassword">Bekräfta lösenord</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                        </div>
                     </div>
 
-                    {/* Lösenord */}
-                    <div className="input-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    {/* Bekräfta Lösenord */}
-                    <div className="input-group">
-                        <label htmlFor="confirmPassword">Confirm Password</label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <button type="submit">Register</button>
+                    <button type="submit">Registrera</button>
                 </form>
             </div>
         </div>

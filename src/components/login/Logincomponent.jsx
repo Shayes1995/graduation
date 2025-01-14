@@ -2,7 +2,8 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import { db } from '../../firebase/configfb'
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
-
+import './Logincomponent.css'
+import Logo from './awlogo.svg'
 const Logincomponent = () => {
 
     const [email, setEmail] = useState("")
@@ -24,23 +25,33 @@ const Logincomponent = () => {
     }
 
     return (
-        <div>
+        <div className='login-container'>
             <div className="container">
                 <div className="row">
-                    <div className="col-md-6">
-                        <h2>Login</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                <label>Email</label>
-                                <input type="email" className="form-control" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                            </div>
-                            <div className="form-group">
-                                <label>Password</label>
-                                <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                            </div>
-                            <button type="submit" className="btn btn-primary">Login</button>
-                        </form>
+                    <div className="logo-container">
+                        <img src={Logo} alt="logo" />
                     </div>
+                    <h2 className='center'>Logga in</h2>
+                    <p className='center'>Logga in på ditt AcademicWorks konto</p>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>E-post *</label>
+                            <input type="email" className="input-login" value={email} onChange={(e) => setEmail(e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                            <label>Lösenord *</label>
+                            <input type="password" className="input-login" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        </div>
+                        <div className="form-group">
+
+                            <span>
+                                <a href="">Glömt lösenord?</a>
+                            </span>
+                        </div>
+                        <div className="form-group">
+                            <button type="submit" className="button-login">Logga in</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 

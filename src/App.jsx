@@ -1,7 +1,10 @@
 import React from 'react'
+import 'bootstrap/dist/css/bootstrap.css';
+import "./index.css";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Rootlayout from './rootlayout/Rootlayout'
 import Login from './pages/Login'
+import Home from './pages/Home'
 import { db } from './firebase/configfb'
 import Admin from './pages/Admin'
 import Register from './pages/Register'
@@ -14,6 +17,10 @@ const App = () => {
       children: [
         {
           path: '/',
+          element: <Home />
+        },
+        {
+          path: '/login',
           element: <Login />
         },
         {

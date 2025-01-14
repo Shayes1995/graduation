@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../firebase/configfb';
+import { useNavigate } from 'react-router';
+import './Adminlogin.css';
 
 const Adminlogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,6 +24,7 @@ const Adminlogin = () => {
      
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+            const uid = user.uid;
 
 
             const adminsRef = collection(db, 'admins'); 
@@ -28,9 +32,18 @@ const Adminlogin = () => {
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                console.log('Admin found:', querySnapshot.docs[0].data());
+                const adminData = querySnapshot.docs[0].data();
+
+                const adminWithUID = {
+                    ...adminData,
+                    uid: uid,
+                };
+
                 setError('');
                 alert('Admin login successful!');
+                localStorage.setItem('admin', JSON.stringify(adminWithUID));
+                navigate('/admin/add-posts');
+
  
             } else {
                 setError('Admin does not exist in the database.');
@@ -42,7 +55,7 @@ const Adminlogin = () => {
     };
 
     return (
-        <div>
+        <div className='main-login'>
             <div className="container">
                 <div className="row">
                     <div className="col-md-6">

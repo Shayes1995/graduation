@@ -54,7 +54,7 @@ const RegisterComponent = () => {
 
     return (
         <div className='register-container'>
-            <form onSubmit={handleSubmit}>
+            <form className='form-container' onSubmit={handleSubmit}>
                 <div className="input-group">
                     <label htmlFor="firstName">Förnamn</label>
                     <input type="text" id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} required />

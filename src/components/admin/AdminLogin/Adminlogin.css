@@ -2,8 +2,31 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    box-sizing: border-box;
+
+}
+
+.form-admin-login {
+    width: 100%;
 }
 
 .container {
     width: 600px;
+    box-sizing: content-box;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+input {
+    all: unset;
+    box-sizing: border-box;
+    display: inline-flex;
+    border-radius: .25rem;
+    padding: .75rem 1.5rem;
+    border: 1px solid rgba(128, 128, 128, 0.377);
+    width: 100%;
 }

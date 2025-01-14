@@ -12,7 +12,7 @@
     width: 100%;
 }
 
-form {
+.form-add-post {
 
     width: 1000px;
     background-color: white;
@@ -24,7 +24,12 @@ form {
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin: 1rem;
+
+    padding: 1.5rem;
+}
+
+.box-form-post:first-child {
+    border-right: 1px solid #cccccc9b;
 }
 
 .group {
@@ -64,4 +69,19 @@ label {
 
 .small-input:first-child {
     margin: 0;
+}
+
+.btn-group button {
+    width: 10rem;
+    height: 2.5rem;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.light {
+    background-color: rgb(105, 224, 103);
 }

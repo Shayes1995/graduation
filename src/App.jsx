@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import { db } from './firebase/configfb';
 import Admin from './pages/Admin';
 import Register from './pages/Register';
+import MinSida from './pages/MinSida';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -20,16 +21,20 @@ const App = () => {
           element: <Home />
         },
         {
-          path: 'login', // Nu är 'login' en relativ path
+          path: 'login',
           element: <Login />
         },
         {
-          path: 'admin', // Nu är 'admin' en relativ path
+          path: 'admin',
           element: <Admin />
         },
         {
-          path: 'register', // Nu är 'register' en relativ path
+          path: 'register',
           element: <Register />
+        },
+        {
+          path: 'min-sida',
+          element: <MinSida />
         }
       ]
     }

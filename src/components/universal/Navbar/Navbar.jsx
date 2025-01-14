@@ -1,8 +1,18 @@
+import React from 'react';
 import LogoMainGreen from './logo_main_green.svg';
 import contactBlack from './contact-black.svg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Navbar = () => {
+  const user = Cookies.get('user');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    Cookies.remove('user');
+    navigate('/login');
+  };
+
   return (
     <header className="py-3 mb-4">
       <div className="container">
@@ -20,13 +30,17 @@ const Navbar = () => {
             <li><Link to="#" className="nav-link px-3">För företag</Link></li>
             <li><Link to="#" className="nav-link px-3">Om oss</Link></li>
             <li><Link to="#" className="nav-link px-3">Kontakt</Link></li>
-            <li><Link to="/min-sida" className="nav-link px-3">Min sida</Link></li>
+            {user && <li><Link to="/min-sida" className="nav-link px-3">Min sida</Link></li>}
           </ul>
 
           <div className="col-md-3 text-end">
-            <Link to="/login" className="d-inline-flex link-body-emphasis text-decoration-none">
-              <img src={contactBlack} alt="Contact Black" width="40" height="32" />
-            </Link>
+            {user ? (
+              <button onClick={handleLogout} className="btn btn-secondary">Logout</button>
+            ) : (
+              <Link to="/login" className="d-inline-flex link-body-emphasis text-decoration-none">
+                <img src={contactBlack} alt="Contact Black" width="40" height="32" />
+              </Link>
+            )}
           </div>
         </div>
       </div>

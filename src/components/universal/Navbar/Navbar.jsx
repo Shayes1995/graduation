@@ -6,10 +6,12 @@ import Cookies from 'js-cookie';
 
 const Navbar = () => {
   const user = Cookies.get('user');
+  const admin = Cookies.get('admin');
   const navigate = useNavigate();
 
   const handleLogout = () => {
     Cookies.remove('user');
+    Cookies.remove('admin');
     navigate('/login');
   };
 
@@ -31,10 +33,11 @@ const Navbar = () => {
             <li><Link to="#" className="nav-link px-3">Om oss</Link></li>
             <li><Link to="#" className="nav-link px-3">Kontakt</Link></li>
             {user && <li><Link to="/min-sida" className="nav-link px-3">Min sida</Link></li>}
+            {admin && <li><Link to="/admin/add-posts" className="nav-link px-3">Add job</Link></li>}
           </ul>
 
           <div className="col-md-3 text-end">
-            {user ? (
+            {user || admin ? (
               <button onClick={handleLogout} className="btn btn-secondary">Logout</button>
             ) : (
               <Link to="/login" className="d-inline-flex link-body-emphasis text-decoration-none">

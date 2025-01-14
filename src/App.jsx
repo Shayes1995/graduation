@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import { db } from './firebase/configfb'
 import Admin from './pages/Admin'
 import Register from './pages/Register'
+import AdminAddPosts from './pages/AdminAddPosts';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -24,8 +25,12 @@ const App = () => {
           element: <Login />
         },
         {
-          path: '/admin',
+          path: '/login/admin',
           element: <Admin />
+        },
+        {
+          path: '/admin/add-posts',
+          element: <AdminAddPosts />
         },
         {
           path: '/register',

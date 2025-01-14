@@ -9,8 +9,7 @@ import { db } from './firebase/configfb';
 import Admin from './pages/Admin';
 import Register from './pages/Register';
 import AdminAddPosts from './pages/AdminAddPosts';
-import MinSida from './pages/MinSida';
-import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
+import MyPage from './pages/MyPage';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -40,12 +39,12 @@ const App = () => {
         },
         
         {
-          path: 'register', // Nu är 'register' en relativ path
+          path: 'register',
           element: <Register />
         },
         {
-          path: 'min-sida',
-          element: <MinSida />
+          path: 'my-page',
+          element: <MyPage />
         }
       ]
     }

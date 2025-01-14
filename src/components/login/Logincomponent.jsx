@@ -1,9 +1,10 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { db } from '../../firebase/configfb'
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
-import './Logincomponent.css'
-import Logo from './awlogo.svg'
+import React, { useState } from 'react';
+import { db } from '../../firebase/configfb';
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import './Logincomponent.css';
+import Logo from './awlogo.svg';
+
 const Logincomponent = () => {
 
     const [email, setEmail] = useState("")
@@ -11,8 +12,6 @@ const Logincomponent = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const auth = getAuth();
-        const db = getFirestore();
 
         if (!email) {
             setEmailError(true);
@@ -22,6 +21,25 @@ const Logincomponent = () => {
             setPasswordError(true);
             return;
         }
+
+        try {
+            const auth = getAuth();
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+      
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+              console.log('User data:', userDoc.data());
+              alert('Inloggnad!');
+            } else {
+              console.error('Ingen användardata hittades!');
+              setError('Ingen användardata hittades!');
+            }
+      
+          } catch (error) {
+            console.error('Error logging in:', error);
+            setError('Fel vid inloggning: ' + error.message);
+          }
     }
 
     return (

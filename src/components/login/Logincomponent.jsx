@@ -5,6 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import './Logincomponent.css';
 import Logo from './awlogo.svg';
 import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Logincomponent = () => {
     const [email, setEmail] = useState("");
@@ -33,6 +34,7 @@ const Logincomponent = () => {
             if (userDoc.exists()) {
                 console.log('User data:', userDoc.data());
                 alert('Inloggad!');
+                Cookies.set('user', JSON.stringify(userDoc.data()), { expires: 7 }); // Set cookie for 7 days
                 navigate('/'); // Redirect to home page
             } else {
                 console.error('Ingen användardata hittades!');

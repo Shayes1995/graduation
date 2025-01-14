@@ -4,21 +4,22 @@ import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import './Logincomponent.css';
 import Logo from './awlogo.svg';
+import { Link } from 'react-router-dom';
 
 const Logincomponent = () => {
-
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!email) {
-            setEmailError(true);
+            setError("Please enter your email");
             return;
         }
         if (!password) {
-            setPasswordError(true);
+            setError("Please enter your password");
             return;
         }
 
@@ -26,21 +27,20 @@ const Logincomponent = () => {
             const auth = getAuth();
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-      
+
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists()) {
-              console.log('User data:', userDoc.data());
-              alert('Inloggnad!');
+                console.log('User data:', userDoc.data());
+                alert('Inloggad!');
             } else {
-              console.error('Ingen användardata hittades!');
-              setError('Ingen användardata hittades!');
+                console.error('Ingen användardata hittades!');
+                setError('Ingen användardata hittades!');
             }
-      
-          } catch (error) {
+        } catch (error) {
             console.error('Error logging in:', error);
             setError('Fel vid inloggning: ' + error.message);
-          }
-    }
+        }
+    };
 
     return (
         <div className='login-container'>
@@ -60,8 +60,8 @@ const Logincomponent = () => {
                             <label>Lösenord *</label>
                             <input type="password" className="input-login" value={password} onChange={(e) => setPassword(e.target.value)} />
                         </div>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
                         <div className="form-group">
-
                             <span>
                                 <a href="">Glömt lösenord?</a>
                             </span>
@@ -69,12 +69,14 @@ const Logincomponent = () => {
                         <div className="form-group">
                             <button type="submit" className="button-login">Logga in</button>
                         </div>
+                        <div className="form-group">
+                            <p>Don't have an account? <Link to="/register">Register here</Link></p>
+                        </div>
                     </form>
                 </div>
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default Logincomponent
+export default Logincomponent;

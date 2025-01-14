@@ -14,7 +14,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="pt-3 mb-4">
+    <header className="pt-3 mb-4 navBar">
         <div className="d-flex align-items-center mx-3 justify-content-center justify-content-md-between">
           <div className="col-md-3 mb-2 mb-md-0">
             <Link to="/" className="d-inline-flex link-body-emphasis text-decoration-none">
@@ -28,7 +28,7 @@ const Navbar = () => {
             <li><Link to="#" className="nav-link px-2 link-dark">För jobbsökande</Link></li>
             <li><Link to="#" className="nav-link px-2 link-dark">För företag</Link></li>
             <li><Link to="#" className="nav-link px-2 link-dark">Om oss</Link></li>
-            <li><Link to="#" className="nav-link px-2 link-dark">Kontakt</Link></li>
+            <li><Link to="/candidate" className="nav-link px-2 link-dark">Kontakt</Link></li>
             {user && <li><Link to="/min-sida" className="nav-link px-3">Min sida</Link></li>}
           </ul>
 

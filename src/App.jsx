@@ -31,8 +31,13 @@ const App = () => {
         },
         {
           path: 'admin/add-posts',
-          element: <AdminAddPosts />
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              <AdminAddPosts />
+            </ProtectedRoute>
+          ),
         },
+        
         {
           path: 'register',
           element: <Register />

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { setDoc, doc } from 'firebase/firestore';
+import { db } from '../../../firebase/configfb';
 import './AddPosts.css';
 
 
@@ -43,18 +45,54 @@ const AddPosts = () => {
         setPost({ ...post, [field]: newPoints });
     };
 
-    // Funktion för att skicka formuläret
-    const handleSubmit = (e) => {
+    // skicka formen
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Job Post:', post);
-        alert('Jobbannons skapad!');
+    
+        try {
+            // parsa denhär för att få ut admin UID
+            const adminData = JSON.parse(localStorage.getItem('admin'));
+    
+            if (!adminData || !adminData.uid) {
+                alert('Admin UID saknas! Var vänlig logga in igen.');
+                return;
+            }
+    
+            
+            await setDoc(doc(db, 'ads', post.title), {
+                ...post,
+                adminUid: adminData.uid, // Kopplar annonsen till specifik admin
+                createdAt: new Date(),
+            });
+    
+            alert('Jobbannons skapad!');
+            setPost({
+                title: '',
+                introDesc: '',
+                location: '',
+                category: '',
+                jobform: '',
+                startDate: '',
+                typeOfAssignment: '',
+                description: '',
+                detailedDesc: '',
+                keyWords: [],
+                offerings: [],
+                requirements: [],
+                personalTraits: [],
+            });
+        } catch (error) {
+            console.error('❌ Error creating job post:', error);
+            alert('Något gick fel! Försök igen.');
+        }
     };
+    
 
     return (
         <div className="addpostspage-container">
             <div className="addpostsform-container">
                 <h2>Lägg upp en Jobbannons</h2>
-                <form onSubmit={handleSubmit}>
+                <form className='form-add-post' onSubmit={handleSubmit}>
                     {/* Titel */}
                     <div className="df-rw">
                         <div className="box-form-post">
@@ -96,15 +134,11 @@ const AddPosts = () => {
                                     <input type="text" className="form-control" id="typeOfAssignment" name="typeOfAssignment" value={post.typeOfAssignment} onChange={handleChange} required />
                                 </div>
 
-                                <div className="form-group small-input">
-                                    <label htmlFor="typeOfAssignment">Typ av uppdrag:</label>
-                                    <input type="text" className="form-control" id="typeOfAssignment" name="typeOfAssignment" value={post.typeOfAssignment} onChange={handleChange} required />
-                                </div>
+
                             </div>
                         </div>
 
                         <div className="box-form-post">
-
                             <div className="form-group">
                                 <label htmlFor="detailedDesc">Detaljerad beskrivning</label>
                                 <textarea className="form-control" id="detailedDesc" name="detailedDesc" rows="5" value={post.detailedDesc} onChange={handleChange} required ></textarea>
@@ -125,7 +159,7 @@ const AddPosts = () => {
                                         </div>
                                     ))}
                                 </ul>
-                                <button type="button" onClick={() => handleAddPoint('offerings')}>
+                                <button className='light' type="button" onClick={() => handleAddPoint('offerings')}>
                                     Lägg till punkt
                                 </button>
                             </div>
@@ -145,7 +179,7 @@ const AddPosts = () => {
                                         </div>
                                     ))}
                                 </ul>
-                                <button type="button" onClick={() => handleAddPoint('requirements')}>
+                                <button className='light' type="button" onClick={() => handleAddPoint('requirements')}>
                                     Lägg till punkt
                                 </button>
                             </div>
@@ -166,16 +200,18 @@ const AddPosts = () => {
                                         </div>
                                     ))}
                                 </ul>
-                                <button type="button" onClick={() => handleAddPoint('personalTraits')}>
+                                <button className='light' type="button" onClick={() => handleAddPoint('personalTraits')}>
                                     Lägg till punkt
                                 </button>
                             </div>
                         </div>
                     </div>
+                    <div className="btn-group">
+                        <button type="submit" className="">
+                            Skapa Jobbannons
+                        </button>
+                    </div>
 
-                    <button type="submit" className="btn btn-primary">
-                        Skapa Jobbannons
-                    </button>
                 </form >
             </div >
         </div >

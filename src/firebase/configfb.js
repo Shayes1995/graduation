@@ -38,6 +38,41 @@ const createUsersCollection = async () => {
     }
 };
 
+const createAdsCollection = async (post) => {
+    try {
+        const adsSnapshot = await getDocs(collection(db, "ads"));
+        if (adsSnapshot.empty) {
+            console.log("Creating 'ads' collection");
+
+            
+            await setDoc(doc(db, "ads", "sampleAd"), {
+                title: "Frontend Developer",
+                introDesc: "Join our dynamic team!",
+                location: "Stockholm, Sweden",
+                category: "IT & Tech",
+                jobform: "Full-time",
+                startDate: "2025-02-01",
+                typeOfAssignment: "Permanent",
+                description: "We are looking for a talented Frontend Developer.",
+                detailedDesc: "Your responsibilities will include developing and maintaining web applications.",
+                keyWords: ["React", "JavaScript", "Frontend"],
+                offerings: ["Flexible hours", "Remote work", "Competitive salary"],
+                requirements: ["3+ years experience", "Proficient in React"],
+                personalTraits: ["Team player", "Problem solver"],
+                createdAt: new Date(),
+            });
+            
+            console.log("✅ 'ads' collection created!");
+        } else {
+            console.log("✅ 'ads' collection already exists!");
+        }
+    } catch (error) {
+        console.error("❌ Error creating 'ads' collection:", error);
+    }
+};
+
+// Run the function
+createAdsCollection();
 // Run the function
 createUsersCollection();
 

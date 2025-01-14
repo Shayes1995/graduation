@@ -14,6 +14,7 @@ const Adminlogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const auth = getAuth();
+        const adminUid = localStorage.getItem('adminUid');
 
         if (!email || !password) {
             setError('Please enter both email and password');
@@ -21,13 +22,13 @@ const Adminlogin = () => {
         }
 
         try {
-     
+
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             const uid = user.uid;
 
 
-            const adminsRef = collection(db, 'admins'); 
+            const adminsRef = collection(db, 'admins');
             const q = query(adminsRef, where('email', '==', email));
             const querySnapshot = await getDocs(q);
 
@@ -44,7 +45,7 @@ const Adminlogin = () => {
                 localStorage.setItem('admin', JSON.stringify(adminWithUID));
                 navigate('/admin/add-posts');
 
- 
+
             } else {
                 setError('Admin does not exist in the database.');
             }
@@ -58,24 +59,24 @@ const Adminlogin = () => {
         <div className='main-login'>
             <div className="container">
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="container-for-form">
                         <h2>Admin Login</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
+                        <form className='form-admin-login' onSubmit={handleSubmit}>
+                            <div className="form-group-admin">
                                 <label>Email</label>
                                 <input
                                     type="email"
-                                    className="form-control"
+                                    className="input-login"
                                     placeholder="Email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="form-group-admin">
                                 <label>Password</label>
                                 <input
                                     type="password"
-                                    className="form-control"
+                                    className="input-login"
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}

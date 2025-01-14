@@ -1,9 +1,10 @@
-import React from 'react'
+import React from "react";
+import "../styles.css"; // Make sure the path is correct
 
 const Home = () => {
   return (
-    <div>Home</div>
-  )
+    <div className="homePage">gimmie jobb gimmie jobb</div>
+  );
 }
 
-export default Home
+export default Home;

@@ -1,0 +1,52 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    box-sizing: border-box;
+    padding: 2rem;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    box-sizing: content-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(255, 255, 255);
+    padding: 2rem;
+
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.d-rw {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.rw-input {
+    width: 48%;
+}
+
+.input-group input {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}

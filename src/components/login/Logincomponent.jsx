@@ -1,51 +1,86 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { db } from '../../firebase/configfb'
-import {Sig, getAuth } from 'firebase/auth'
+import React, { useState } from 'react';
+import { db } from '../../firebase/configfb';
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import './Logincomponent.css';
+import Logo from './awlogo.svg';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Logincomponent = () => {
-
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const auth = getAuth();
-        const db = getFirestore();
-    
+
         if (!email) {
-          setEmailError(true);
-          return;
+            setError("Please enter your email");
+            return;
         }
         if (!password) {
-          setPasswordError(true);
-          return;
+            setError("Please enter your password");
+            return;
         }
-    }
+
+        try {
+            const auth = getAuth();
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                console.log('User data:', userDoc.data());
+                alert('Inloggad!');
+                Cookies.set('user', JSON.stringify(userDoc.data()), { expires: 7 }); // Set cookie for 7 days
+                navigate('/'); // Redirect to home page
+            } else {
+                console.error('Ingen användardata hittades!');
+                setError('Ingen användardata hittades!');
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            setError('Fel vid inloggning: ' + error.message);
+        }
+    };
 
     return (
-        <div>
+        <div className='login-container'>
             <div className="container">
                 <div className="row">
-                    <div className="col-md-6">
-                        <h2>Login</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                <label>Email</label>
-                                <input type="email" className="form-control" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                            </div>
-                            <div className="form-group">
-                                <label>Password</label>
-                                <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                            </div>
-                            <button type="submit" className="btn btn-primary">Login</button>
-                        </form>
+                    <div className="logo-container">
+                        <img src={Logo} alt="logo" />
                     </div>
+                    <h2 className='center'>Logga in</h2>
+                    <p className='center'>Logga in på ditt AcademicWorks konto</p>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>E-post *</label>
+                            <input type="email" className="input-login" value={email} onChange={(e) => setEmail(e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                            <label>Lösenord *</label>
+                            <input type="password" className="input-login" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        </div>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                        <div className="form-group">
+                            <span>
+                                <a href="">Glömt lösenord?</a>
+                            </span>
+                        </div>
+                        <div className="form-group">
+                            <button type="submit" className="button-login">Logga in</button>
+                        </div>
+                        <div className="form-group">
+                            <p>Don't have an account? <Link to="/register">Register here</Link></p>
+                        </div>
+                    </form>
                 </div>
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default Logincomponent
+export default Logincomponent;

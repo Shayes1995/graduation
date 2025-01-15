@@ -12,6 +12,7 @@ import AdminAddPosts from './pages/AdminAddPosts';
 import MyPage from './pages/MyPage';
 import AdminSearch from './pages/AdminSearch';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
+import Candidate from './components/candidate/Candidate';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -54,6 +55,10 @@ const App = () => {
         {
           path: 'my-page',
           element: <MyPage />
+        },
+        {
+          path: 'candidate',
+          element: <Candidate />
         }
       ]
     }

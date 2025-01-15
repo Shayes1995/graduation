@@ -3,8 +3,6 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Awesome', sans-serif;
+    background-color: rgb(239, 248, 241);
 }
 
-.homePage {
-    background-color: #eff8f1;
-}

@@ -10,6 +10,7 @@ import Admin from './pages/Admin';
 import Register from './pages/Register';
 import AdminAddPosts from './pages/AdminAddPosts';
 import MyPage from './pages/MyPage';
+import AdminSearch from './pages/AdminSearch';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 
 const App = () => {
@@ -38,7 +39,14 @@ const App = () => {
             </ProtectedRoute>
           ),
         },
-        
+        {
+          path: 'admin/search',
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              <AdminSearch />
+            </ProtectedRoute>
+          ),
+        },
         {
           path: 'register',
           element: <Register />

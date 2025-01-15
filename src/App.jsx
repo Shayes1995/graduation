@@ -10,7 +10,9 @@ import Admin from './pages/Admin';
 import Register from './pages/Register';
 import AdminAddPosts from './pages/AdminAddPosts';
 import MyPage from './pages/MyPage';
+import AdminSearch from './pages/AdminSearch';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
+import Candidate from './components/candidate/Candidate';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -38,7 +40,14 @@ const App = () => {
             </ProtectedRoute>
           ),
         },
-        
+        {
+          path: 'admin/search',
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              <AdminSearch />
+            </ProtectedRoute>
+          ),
+        },
         {
           path: 'register',
           element: <Register />
@@ -46,6 +55,10 @@ const App = () => {
         {
           path: 'my-page',
           element: <MyPage />
+        },
+        {
+          path: 'candidate',
+          element: <Candidate />
         }
       ]
     }

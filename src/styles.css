@@ -6,6 +6,19 @@
     align-items: center;
 }
 
+.footerPage {
+    background-color: #046e60;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footerImg {
+    max-width: 99%;
+    max-height: 99%;
+}
+
 .section {
     height:fit-content !important;
 }

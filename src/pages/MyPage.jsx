@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebase/configfb';
 import { getAuth } from 'firebase/auth';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import './MyPage.css';
 
 const MyPage = () => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
     const [bio, setBio] = useState('');
     const [skills, setSkills] = useState([]);
     const [skillInput, setSkillInput] = useState('');
     const [cvUrl, setCvUrl] = useState('');
+    const [profilePic, setProfilePic] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
     const [message, setMessage] = useState('');
     const auth = getAuth();
     const user = auth.currentUser;
@@ -19,9 +27,15 @@ const MyPage = () => {
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
+                    setFirstName(userData.firstName || '');
+                    setLastName(userData.lastName || '');
+                    setEmail(userData.email || '');
+                    setPhone(userData.phone || '');
+                    setAddress(userData.address || '');
                     setBio(userData.bio || '');
                     setSkills(userData.skills || []);
                     setCvUrl(userData.cvUrl || '');
+                    setProfilePic(userData.profilePic || ''); // Add the profile picture URL from Firestore
                 }
             }
         };
@@ -42,6 +56,38 @@ const MyPage = () => {
         setSkills(newSkills);
     };
 
+    const handleProfilePicChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const storage = getStorage();
+            const storageRef = ref(storage, `profilePics/${user.uid}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    // Optional: Track progress here
+                },
+                (error) => {
+                    console.error('Error uploading file:', error);
+                },
+                async () => {
+                    // Get the download URL after upload
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    setProfilePic(downloadURL);
+
+                    // Update Firestore with the new profile picture URL
+                    const userDoc = doc(db, 'users', user.uid);
+                    await updateDoc(userDoc, {
+                        profilePic: downloadURL,
+                    });
+
+                    setMessage('Profile picture updated successfully!');
+                }
+            );
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!user) {
@@ -51,81 +97,172 @@ const MyPage = () => {
         try {
             const userDoc = doc(db, 'users', user.uid);
             await updateDoc(userDoc, {
+                firstName,
+                lastName,
+                email,
+                phone,
+                address,
                 bio,
                 skills,
                 cvUrl,
+                profilePic,
             });
             setMessage('Profile updated successfully!');
+            setIsEditing(false); // Stop editing after save
         } catch (error) {
             console.error('Error updating profile:', error);
             setMessage('Error updating profile: ' + error.message);
         }
     };
 
+    const handleEditClick = () => {
+        setIsEditing(true); // Activate edit mode
+    };
+
     return (
         <div className="my-page-container">
-            <h2>My Page</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Bio</label>
-                    <textarea
-                        value={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                        placeholder="Write a short bio about yourself..."
+            <h1>Welcome {firstName || 'User'}</h1>
+            <h3>My Page</h3>
+            <p>Håll din profil uppdaterad för att förbättra din närvaro och ge andra en bättre förståelse för vem du är. Genom att uppdatera din bio, lägga till dina färdigheter och dela din CV-länk kan du skapa ett starkt intryck och visa upp dina bästa sidor.</p>
+
+            <div className="profile-card">
+                <div className="profile-card-header">
+                    <img
+                        src={profilePic || 'https://bootdey.com/img/Content/avatar/avatar7.png'}
+                        alt="User Avatar"
+                        className="profile-img"
+                    />
+                    <h4>{firstName} {lastName || 'User Name'}</h4>
+                    <button onClick={() => document.getElementById('fileInput').click()} className="btn btn-secondary">
+                        Change picture
+                    </button>
+                    <input
+                        type="file"
+                        id="fileInput"
+                        style={{ display: 'none' }}
+                        onChange={handleProfilePicChange}
                     />
                 </div>
-                <div className="form-group">
-                    <label>Skills</label>
-                    <div className="skills-input-container">
-                        <input
-                            type="text"
-                            value={skillInput}
-                            onChange={(e) => setSkillInput(e.target.value)}
-                            placeholder="Enter a skill"
-                        />
-                        <button
-                            onClick={handleSkillAdd}
-                            className="btn btn-secondary"
-                        >
-                            Add Skill
+
+                {isEditing ? (
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>First Name</label>
+                            <input
+                                type="text"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                placeholder="Enter your first name"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Last Name</label>
+                            <input
+                                type="text"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                placeholder="Enter your last name"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter your email"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Phone</label>
+                            <input
+                                type="text"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                placeholder="Enter your phone number"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Address</label>
+                            <input
+                                type="text"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                placeholder="Enter your address"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Bio</label>
+                            <textarea
+                                value={bio}
+                                onChange={(e) => setBio(e.target.value)}
+                                placeholder="Write a short bio about yourself..."
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Skills</label>
+                            <div className="skills-input-container">
+                                <input
+                                    type="text"
+                                    value={skillInput}
+                                    onChange={(e) => setSkillInput(e.target.value)}
+                                    placeholder="Enter a skill"
+                                />
+                                <button
+                                    onClick={handleSkillAdd}
+                                    className="btn btn-secondary"
+                                >
+                                    Add Skill
+                                </button>
+                            </div>
+                            <ul className="skills-list">
+                                {skills.map((skill, index) => (
+                                    <li key={index}>
+                                        {skill}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleSkillRemove(index)}
+                                        >
+                                            Remove
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="form-group">
+                            <label>CV URL</label>
+                            <input
+                                type="text"
+                                value={cvUrl}
+                                onChange={(e) => setCvUrl(e.target.value)}
+                                placeholder="Enter your CV URL"
+                            />
+                        </div>
+                        <button type="submit" className="btn btn-primary">
+                            Save
+                        </button>
+                        {message && <p>{message}</p>}
+                    </form>
+                ) : (
+                    <div className="profile-display">
+                        <p><strong>First Name:</strong> {firstName}</p>
+                        <p><strong>Last Name:</strong> {lastName}</p>
+                        <p><strong>Email:</strong> {email}</p>
+                        <p><strong>Phone:</strong> {phone}</p>
+                        <p><strong>Address:</strong> {address}</p>
+                        <p><strong>Bio:</strong> {bio || 'No bio provided'}</p>
+                        <p><strong>Skills:</strong> {skills.length > 0 ? skills.join(', ') : 'No skills added'}</p>
+                        <p><strong>CV URL:</strong> {cvUrl ? <a href={cvUrl} target="_blank" rel="noopener noreferrer">{cvUrl}</a> : 'No CV URL provided'}</p>
+                        <button onClick={handleEditClick} className="btn btn-secondary">
+                            Edit Profile
                         </button>
                     </div>
-                    <ul className="skills-list">
-                        {skills.map((skill, index) => (
-                            <li key={index}>
-                                {skill}
-                                <button
-                                    type="button"
-                                    onClick={() => handleSkillRemove(index)}
-                                >
-                                    Remove
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <div className="form-group">
-                    <label>CV URL</label>
-                    <input
-                        type="text"
-                        value={cvUrl}
-                        onChange={(e) => setCvUrl(e.target.value)}
-                        placeholder="Enter your CV URL"
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">
-                    Save
-                </button>
-                {message && <p>{message}</p>}
-            </form>
-            <div className="profile-display">
-                <h3>Profile Information</h3>
-                <p><strong>Bio:</strong> {bio}</p>
-                <p><strong>Skills:</strong> {skills.join(', ')}</p>
-                <p><strong>CV URL:</strong> <a href={cvUrl} target="_blank" rel="noopener noreferrer">{cvUrl}</a></p>
+                )}
             </div>
         </div>
     );
 };
 
 export default MyPage;
+
+

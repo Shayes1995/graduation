@@ -1,38 +1,59 @@
 import React, { useState } from 'react';
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, doc, getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../../../firebase/configfb';
 import './AddPosts.css';
 
 
 const AddPosts = () => {
+
+
+    const jobCategories = [
+        'Kundservice', 'Utbildning', 'Hotell', 'Restaurang', 'Turism', 'IT',
+        'Industri', 'Tillverkning', 'Marknadsföring', 'Information', 'Media',
+        'HR', 'Kontor', 'Administration', 'Försäljning', 'Teknik', 'Lager',
+        'Logistik', 'Ekonomi', 'Juridik', 'Inköp'
+    ];
+
+    const typeOfAssignments = ['Rekrytering', 'Konsultuppdrag'];
+    const jobScopes = ['Heltid', 'Deltid'];
+    const languages = ['Svenska', 'Engelska'];
+    const otherOptions = ['Trainee', 'Sommarjobb', 'Internt på Academic Work', 'Kortare jobbuppdrag', 'Frilansuppdrag', 'Gröna jobb', 'Utbildning'];
+
+
     const [post, setPost] = useState({
         title: '',
         introDesc: '',
         location: '',
+        language: '',
+        other: '',
+        company: '',
         category: '',
         jobform: '',
+        tasks: [],
         startDate: '',
         typeOfAssignment: '',
         description: '',
         detailedDesc: '',
+        jobtaskDesc: '',
         keyWords: [],
         offerings: [],
         requirements: [],
         personalTraits: [],
+        personalMerits: [],
     });
 
-    //uppdatera state när användaren skriver i inputfält
+    //uppdatera state när man skriver i inputfält
     const handleChange = (e) => {
         const { name, value } = e.target;
         setPost({ ...post, [name]: value });
     };
 
-    // uppdate state när användaren lägger till en punkt
+    // uppdate state när man lägger till en punkt
     const handleAddPoint = (field) => {
         setPost({ ...post, [field]: [...post[field], ''] });
     };
 
-    //uppdate state när användaren ändrar en punkt
+    //uppdate state när man ändrar en punkt
     const handlePointChange = (e, index, field) => {
         const newPoints = [...post[field]];
         newPoints[index] = e.target.value;
@@ -46,47 +67,63 @@ const AddPosts = () => {
     };
 
     // skicka formen
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         try {
-            // parsa denhär för att få ut admin UID
             const adminData = JSON.parse(localStorage.getItem('admin'));
-    
             if (!adminData || !adminData.uid) {
                 alert('Admin UID saknas! Var vänlig logga in igen.');
                 return;
             }
-    
-            
+
+            // Hämta det senaste adId
+            const adsRef = collection(db, 'ads');
+            const latestAdQuery = query(adsRef, orderBy('adId', 'desc'), limit(1));
+            const querySnapshot = await getDocs(latestAdQuery);
+
+            let newAdId = 1000; // Startvärde för vår första annons id,
+            if (!querySnapshot.empty) {
+                const latestAd = querySnapshot.docs[0].data();
+                newAdId = latestAd.adId + 1; // addera 1 till adId
+            }
+
+            // Skapa ny annons med adId
             await setDoc(doc(db, 'ads', post.title), {
                 ...post,
-                adminUid: adminData.uid, // Kopplar annonsen till specifik admin
+                adId: newAdId, // Unikt id för annonsen
+                adminUid: adminData.uid,
                 createdAt: new Date(),
             });
-    
+
             alert('Jobbannons skapad!');
             setPost({
                 title: '',
                 introDesc: '',
                 location: '',
+                company: '',
                 category: '',
                 jobform: '',
+                tasks: [],
                 startDate: '',
                 typeOfAssignment: '',
                 description: '',
+                jobtaskDesc: '',
                 detailedDesc: '',
                 keyWords: [],
                 offerings: [],
                 requirements: [],
                 personalTraits: [],
+                personalMerits: [],
             });
         } catch (error) {
             console.error('❌ Error creating job post:', error);
             alert('Något gick fel! Försök igen.');
         }
     };
-    
+
+
 
     return (
         <div className="addpostspage-container">
@@ -114,37 +151,99 @@ const AddPosts = () => {
                                     <input type="text" className="form-control" id="location" name="location" value={post.location} onChange={handleChange} required />
                                 </div>
                                 <div className="form-group small-input">
-                                    <label htmlFor="category">Jobbkategori:</label>
-                                    <input type="text" className="form-control" id="location" name="category" value={post.category} onChange={handleChange} required />
-                                </div>
-                            </div>
-                            <div className="df-rw-comp">
-                                <div className="form-group small-input">
-                                    <label htmlFor="jobform">Omfattning:</label>
-                                    <input type="text" className="form-control" id="jobform" name="jobform" value={post.jobform} onChange={handleChange} required />
-                                </div>
-                                <div className="form-group small-input">
                                     <label htmlFor="startDate">Startdatum:</label>
                                     <input type="text" className="form-control" id="startDate" name="startDate" value={post.startDate} onChange={handleChange} required />
                                 </div>
                             </div>
+
                             <div className="df-rw-comp">
                                 <div className="form-group small-input">
-                                    <label htmlFor="typeOfAssignment">Typ av uppdrag:</label>
-                                    <input type="text" className="form-control" id="typeOfAssignment" name="typeOfAssignment" value={post.typeOfAssignment} onChange={handleChange} required />
+                                    <label htmlFor="company">Företag:</label>
+                                    <input type="text" className="form-control" id="company" name="company" value={post.company} onChange={handleChange} required />
                                 </div>
 
 
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="detailedDesc">Detaljerad beskrivning</label>
+                                <textarea className="form-control" id="detailedDesc" name="detailedDesc" rows="5" value={post.detailedDesc} onChange={handleChange} required ></textarea>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="jobtaskDesc">Arbetsbeskrivning</label>
+                                <textarea className="form-control" id="jobtaskDesc" name="jobtaskDesc" rows="5" value={post.jobtaskDesc} onChange={handleChange} required ></textarea>
                             </div>
                         </div>
 
                         <div className="box-form-post">
                             <div className="form-group">
-                                <label htmlFor="detailedDesc">Detaljerad beskrivning</label>
-                                <textarea className="form-control" id="detailedDesc" name="detailedDesc" rows="5" value={post.detailedDesc} onChange={handleChange} required ></textarea>
+                                <label htmlFor="category">Jobbkategori</label>
+                                <select id="category" name="category" value={post.category} onChange={handleChange} required>
+                                    <option value="">Välj kategori</option>
+                                    {jobCategories.map((cat, index) => (
+                                        <option key={index} value={cat}>{cat}</option>
+                                    ))}
+                                </select>
                             </div>
 
-                            {/* lista: Vad du erbjuds */}
+                            <div className="form-group">
+                                <label htmlFor="typeOfAssignment">Typ av uppdrag</label>
+                                <select id="typeOfAssignment" name="typeOfAssignment" value={post.typeOfAssignment} onChange={handleChange} required>
+                                    <option value="">Välj typ av uppdrag</option>
+                                    {typeOfAssignments.map((type, index) => (
+                                        <option key={index} value={type}>{type}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="jobform">Omfattning</label>
+                                <select id="jobform" name="jobform" value={post.jobform} onChange={handleChange} required>
+                                    <option value="">Välj omfattning</option>
+                                    {jobScopes.map((scope, index) => (
+                                        <option key={index} value={scope}>{scope}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="language">Språk</label>
+                                <select id="language" name="language" value={post.language} onChange={handleChange} required>
+                                    <option value="">Välj språk</option>
+                                    {languages.map((lang, index) => (
+                                        <option key={index} value={lang}>{lang}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="other">Övrigt</label>
+                                <select id="other" name="other" value={post.other} onChange={handleChange}>
+                                    <option value="">Välj ett alternativ</option>
+                                    {otherOptions.map((option, index) => (
+                                        <option key={index} value={option}>{option}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* lista: Vad du ska göra */}
+                            <div className="form-group">
+                                <label>Arbetsuppgifter</label>
+                                <ul>
+                                    {post.tasks.map((point, index) => (
+                                        <div className="group">
+                                            <li key={index}>
+                                                <input type="text" value={point} onChange={(e) => handlePointChange(e, index, 'tasks')} placeholder="Lägg till punkt" />
+                                                <button type="button" onClick={() => handleRemovePoint(index, 'tasks')}>
+                                                    Ta bort
+                                                </button>
+                                            </li>
+                                        </div>
+                                    ))}
+                                </ul>
+                                <button className='light' type="button" onClick={() => handleAddPoint('tasks')}>
+                                    Lägg till punkt
+                                </button>
+                            </div>
                             <div className="form-group">
                                 <label>Vad du erbjuds</label>
                                 <ul>
@@ -183,6 +282,27 @@ const AddPosts = () => {
                                     Lägg till punkt
                                 </button>
                             </div>
+
+                             {/* lista: meriterande */}
+                             <div className="form-group">
+                                <label>Meriterande egenskaper</label>
+                                <ul>
+                                    {post.personalMerits.map((point, index) => (
+                                        <div className="group">
+                                            <li key={index}>
+                                                <input type="text" value={point} onChange={(e) => handlePointChange(e, index, 'personalMerits')} placeholder="Lägg till punkt" />
+                                                <button type="button" onClick={() => handleRemovePoint(index, 'personalMerits')}>
+                                                    Ta bort
+                                                </button>
+                                            </li>
+                                        </div>
+                                    ))}
+                                </ul>
+                                <button className='light' type="button" onClick={() => handleAddPoint('personalMerits')}>
+                                    Lägg till punkt
+                                </button>
+                            </div>
+
 
                             {/* lista: För att lyckas i rollen */}
                             <div className="form-group">

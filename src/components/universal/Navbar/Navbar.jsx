@@ -30,12 +30,11 @@ const Navbar = () => {
             <li><Link to="#" className="nav-link px-2 link-dark">För jobbsökande</Link></li>
             <li><Link to="#" className="nav-link px-2 link-dark">För företag</Link></li>
             <li><Link to="#" className="nav-link px-2 link-dark">Om oss</Link></li>
-            <li><Link to="#" className="nav-link px-2 link-dark">Kontakt</Link></li>
-            {user && <li><Link to="/my-page" className="nav-link px-3">Min sida</Link></li>}
-            {admin && <li><Link to="/admin/add-posts" className="nav-link px-3">Add job</Link></li>}
-            {admin && <li><Link to="/admin/search" className="nav-link px-3">Search Users</Link></li>}
+            {user && <li><Link to="/my-page" className="nav-link px-2 link-dark">Min sida</Link></li>}
+            {/* {admin && <li><Link to="/admin/add-posts" className="nav-link px-2 link-dark">Add job</Link></li>}
+            {admin && <li><Link to="/admin/search" className="nav-link px-2 link-dark">Search Users</Link></li>} */}
             <li><Link to="/candidate" className="nav-link px-2 link-dark">Kontakt</Link></li>
-            {user && <li><Link to="/min-sida" className="nav-link px-3">Min sida</Link></li>}
+            {user && <li><Link to="/min-sida" className="nav-link px-2 link-dark">Min sida</Link></li>}
           </ul>
 
           <div className="col-md-3 text-end">

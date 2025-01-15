@@ -1,0 +1,10 @@
+.searchDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.searchSelect {
+    width: fit-content;
+    block-size: fit-content;
+}

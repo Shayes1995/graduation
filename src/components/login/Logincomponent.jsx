@@ -33,7 +33,6 @@ const Logincomponent = () => {
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists()) {
                 console.log('User data:', userDoc.data());
-                alert('Inloggad!');
                 Cookies.set('user', JSON.stringify(userDoc.data()), { expires: 7 }); // Set cookie for 7 days
                 navigate('/'); // Redirect to home page
             } else {
@@ -75,6 +74,7 @@ const Logincomponent = () => {
                         </div>
                         <div className="form-group">
                             <p>Don't have an account? <Link to="/register">Register here</Link></p>
+                            <p>Do you work here? <Link to="/admin">Press here</Link></p>
                         </div>
                     </form>
                 </div>

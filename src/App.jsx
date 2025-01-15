@@ -9,7 +9,9 @@ import { db } from './firebase/configfb';
 import Admin from './pages/Admin';
 import Register from './pages/Register';
 import AdminAddPosts from './pages/AdminAddPosts';
-import MinSida from './pages/MinSida';
+import MyPage from './pages/MyPage';
+import AdminSearch from './pages/AdminSearch';
+import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -30,16 +32,28 @@ const App = () => {
           element: <Admin />
         },
         {
-          path: 'admin/add-posts', // Nu är 'admin' en relativ path
-          element: <AdminAddPosts />
+          path: 'admin/add-posts',
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              <AdminAddPosts />
+            </ProtectedRoute>
+          ),
         },
         {
-          path: 'register', // Nu är 'register' en relativ path
+          path: 'admin/search',
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              <AdminSearch />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: 'register',
           element: <Register />
         },
         {
-          path: 'min-sida',
-          element: <MinSida />
+          path: 'my-page',
+          element: <MyPage />
         }
       ]
     }

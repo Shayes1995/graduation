@@ -1,19 +1,45 @@
 import React, { useState } from 'react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/configfb';
-import  './Candidate.css'
+import './Candidate.css';
 
 const Candidate = () => {
   const [keyword, setKeyword] = useState('');
+  const [keywords, setKeywords] = useState([]);
   const [results, setResults] = useState([]);
 
-  const handleSearch = async (e) => {
+  const handleAddKeyword = (e) => {
     e.preventDefault();
-    if (!keyword.trim()) return;
-    const q = query(collection(db, 'users'), where('skills', 'array-contains', keyword));
+    if (keyword.trim() && !keywords.includes(keyword.trim().toLowerCase())) {
+      setKeywords([...keywords, keyword.trim().toLowerCase()]);
+      setKeyword('');
+    }
+  };
+
+  const handleRemoveKeyword = (keywordToRemove) => {
+    setKeywords(keywords.filter(k => k !== keywordToRemove));
+  };
+
+  const handleSearch = async () => {
+    if (keywords.length === 0) return;
+
+    const q = query(collection(db, 'users'));
     const querySnapshot = await getDocs(q);
     const users = querySnapshot.docs.map(doc => doc.data());
-    setResults(users);
+
+    const filteredUsers = users.filter(user => {
+      const userKeywords = [
+        user.firstName?.toLowerCase() || '',
+        user.lastName?.toLowerCase() || '',
+        user.city?.toLowerCase() || '',
+        ...(user.skills || []).map(skill => skill.toLowerCase())
+      ];
+      return keywords.every(k => 
+        userKeywords.some(userKeyword => userKeyword.includes(k))
+      );
+    });
+
+    setResults(filteredUsers);
   };
 
   return (
@@ -22,14 +48,14 @@ const Candidate = () => {
         <div className="justify-content-center row">
           <div className="col-lg-12">
             <div className="candidate-list-widgets mb-4">
-              <form onSubmit={handleSearch}>
+              <form onSubmit={handleAddKeyword}>
                 <div className="g-2 row">
                   <div className="col-lg-6 col-md-4">
                     <div className="filler-job-form">
                       <i className="uil uil-briefcase-alt"></i>
                       <input
                         id="exampleFormControlInput1"
-                        placeholder="Job, Company name..."
+                        placeholder="Enter keywords (e.g., name, city, skill)"
                         type="search"
                         className="form-control filler-job-input-box form-control"
                         value={keyword}
@@ -37,32 +63,34 @@ const Candidate = () => {
                       />
                     </div>
                   </div>
-                  <div className="col-lg-3">
-                    <div className="filler-job-form">
-                      <i className="uil uil-clipboard-notes"></i>
-                      <select
-                        className="searchSelect form-select selectForm__inner"
-                        data-trigger="true"
-                        name="choices-single-categories"
-                        id="choices-single-categories"
-                        aria-label="Default select example"
-                      >
-                        <option value="4">Accounting</option>
-                        <option value="1">IT &amp; Software</option>
-                        <option value="3">Marketing</option>
-                        <option value="5">Banking</option>
-                      </select>
-                    </div>
-                  </div>
                   <div className="col-lg-3 m-0 p-0 text-end">
                     <div className="searchDiv">
                       <button type="submit" className="btn btn-primary">
-                        <i className="uil uil-filter"></i> Search
+                        <i className="uil uil-filter"></i> Add Keyword
                       </button>
                     </div>
                   </div>
                 </div>
               </form>
+              <div className="keywords-list">
+                {keywords.map((k, index) => (
+                  <span key={index} className="badge bg-secondary m-1">
+                    {k}
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-danger ms-2"
+                      onClick={() => handleRemoveKeyword(k)}
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="searchDiv mt-3">
+                <button onClick={handleSearch} className="btn btn-primary">
+                  Search
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -78,8 +106,8 @@ const Candidate = () => {
                           <div className="candidate-list-images">
                             <a href="#">
                               <img
-                                src={user.avatarUrl || "https://bootdey.com/img/Content/avatar/avatar2.png"}
-                                alt=""
+                                src={user.profilePicUrl || "https://bootdey.com/img/Content/avatar/avatar2.png"}
+                                alt="User Avatar"
                                 className="avatar-md img-thumbnail rounded-circle"
                               />
                             </a>
@@ -98,7 +126,7 @@ const Candidate = () => {
                             <p className="text-muted mb-2">{user.jobTitle || "No title"}</p>
                             <ul className="list-inline mb-0 text-muted">
                               <li className="list-inline-item">
-                                <i className="mdi mdi-map-marker"></i> {user.location || "Location unknown"}
+                                <i className="mdi mdi-map-marker"></i> {user.city || "Location unknown"}
                               </li>
                               <li className="list-inline-item">
                                 <i className="mdi mdi-wallet"></i> ${user.hourlyRate || "0"} / hour
@@ -134,7 +162,6 @@ const Candidate = () => {
           <div className="mt-4 pt-2 col-lg-12">
             <nav aria-label="Page navigation example">
               <div className="pagination job-pagination mb-0 justify-content-center">
-                
                 <li className="page-item active">
                   <a className="page-link" href="#">
                     1
@@ -155,7 +182,6 @@ const Candidate = () => {
                     4
                   </a>
                 </li>
-                
               </div>
             </nav>
           </div>

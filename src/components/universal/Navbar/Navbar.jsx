@@ -84,20 +84,8 @@ const Navbar = () => {
         </ul>
 
         <div className="col-md-3 text-end">
-          {userName ? (
-            <div className="dropdown m-0 p-0 col-md-3 text-end">
-              <span onClick={toggleDropdown} className="dropdown-toggle" role="button">
-                {userName}
-              </span>
-              {dropdownVisible && (
-                <div className="dropdown-menu dropdown-menu-right show">
-                  {user && <button onClick={toMyPage} className="dropdown-item">MyPage</button>}
-                  {admin && <button onClick={adminAddJob} className="dropdown-item">Add job</button>}
-                  {admin && <button onClick={adminSearch} className="dropdown-item">Search Users</button>}
-                  <button onClick={handleLogout} className="dropdown-item">Logout</button>
-                </div>
-              )}
-            </div>
+          {user || admin ? (
+            <button onClick={handleLogout} className="btn btn-secondary">Logout</button>
           ) : (
             <NavLink to="/login" className="d-inline-flex link-body-emphasis text-decoration-none">
               <img src={contactBlack} alt="Contact Black" width="40" height="32" />

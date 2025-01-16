@@ -1,3 +1,6 @@
+body {
+    background-color: #eff8f1;
+}
 .my-page-container {
     max-width: 900px;
     margin: 0 auto;
@@ -34,9 +37,10 @@ h1 {
 
 .profile-img {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     margin-bottom: 10px;
+    margin-top: 50px;
 }
 
 .profile-info {

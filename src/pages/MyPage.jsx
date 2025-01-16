@@ -10,6 +10,7 @@ const MyPage = () => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
     const [bio, setBio] = useState('');
     const [skills, setSkills] = useState([]);
     const [skillInput, setSkillInput] = useState('');
@@ -31,6 +32,7 @@ const MyPage = () => {
                     setEmail(userData.email || '');
                     setPhone(userData.phone || '');
                     setAddress(userData.address || '');
+                    setCity(userData.city || '');
                     setBio(userData.bio || '');
                     setSkills(userData.skills || []);
                     setCvUrl(userData.cvUrl || '');
@@ -69,6 +71,7 @@ const MyPage = () => {
                 email,
                 phone,
                 address,
+                city,
                 bio,
                 skills,
                 cvUrl,
@@ -105,7 +108,7 @@ const MyPage = () => {
                 {isEditing ? (
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label>First Name</label>
+                            <label>First name</label>
                             <input
                                 type="text"
                                 value={firstName}
@@ -114,7 +117,7 @@ const MyPage = () => {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Last Name</label>
+                            <label>Last name</label>
                             <input
                                 type="text"
                                 value={lastName}
@@ -147,6 +150,15 @@ const MyPage = () => {
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
                                 placeholder="Enter your address"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>City</label>
+                            <input
+                                type="text"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                                placeholder="Enter your city"
                             />
                         </div>
                         <div className="form-group">
@@ -212,15 +224,16 @@ const MyPage = () => {
                     </form>
                 ) : (
                     <div className="profile-display">
-                        <p><strong>First Name:</strong> {firstName}</p>
-                        <p><strong>Last Name:</strong> {lastName}</p>
+                        <p><strong>First name:</strong> {firstName}</p>
+                        <p><strong>Last name:</strong> {lastName}</p>
                         <p><strong>Email:</strong> {email}</p>
                         <p><strong>Phone:</strong> {phone}</p>
                         <p><strong>Address:</strong> {address}</p>
+                        <p><strong>City:</strong> {city}</p>
                         <p><strong>Bio:</strong> {bio || 'No bio provided'}</p>
                         <p><strong>Skills:</strong> {skills.length > 0 ? skills.join(', ') : 'No skills added'}</p>
                         <p><strong>CV URL:</strong> {cvUrl ? <a href={cvUrl} target="_blank" rel="noopener noreferrer">{cvUrl}</a> : 'No CV URL provided'}</p>
-                        <p><strong>Profile Picture URL:</strong> {profilePicUrl ? <a href={profilePicUrl} target="_blank" rel="noopener noreferrer">{profilePicUrl}</a> : 'No profile picture URL provided'}</p>
+                        {/* <p><strong>Profile Picture URL:</strong> {profilePicUrl ? <a href={profilePicUrl} target="_blank" rel="noopener noreferrer">{profilePicUrl}</a> : 'No profile picture URL provided'}</p> */}
                         <button onClick={handleEditClick} className="btn btn-secondary">
                             Edit Profile
                         </button>

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { db } from '../../firebase/configfb';
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { signInWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import './Logincomponent.css';
 import Logo from './awlogo.svg';
+import LogoGmail from './gmail.png';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -55,6 +56,38 @@ const Logincomponent = () => {
         }
     };
 
+    const handleGoogleSignIn = async () => {
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            const userRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userRef);
+
+            if (!userDoc.exists()) {
+                
+                await setDoc(userRef, {
+                    uid: user.uid,
+                    name: user.displayName,
+                    email: user.email,
+                    role: "user", 
+                });
+            }
+
+            // spara cookies o localstorage
+            Cookies.set('user', JSON.stringify(userDoc.data()), { expires: 7 });
+            localStorage.setItem('user', JSON.stringify(userDoc.exists() ? userDoc.data() : { uid: user.uid, name: user.displayName, email: user.email, role: "user" }));
+
+            navigate('/');
+        } catch (error) {
+            console.error("Google sign-in error:", error);
+            setError("Google-inloggning misslyckades: " + error.message);
+        }
+    };
+
     return (
         <div className='login-container'>
             <div className="container">
@@ -63,6 +96,12 @@ const Logincomponent = () => {
                         <img src={Logo} alt="logo" />
                     </div>
                     <h2 className='center'>Logga in</h2>
+                    <div className="google-btn">
+                        <button onClick={handleGoogleSignIn}>
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="google logo" />
+                            Logga in med Google
+                        </button>
+                    </div>
                     <p className='center'>Logga in på ditt AcademicWorks konto</p>
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">

@@ -8,3 +8,8 @@
     width: fit-content;
     block-size: fit-content;
 }
+
+.cv-link {
+    color: blue;
+    text-decoration: underline;
+}

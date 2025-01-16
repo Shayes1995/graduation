@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { collection, query, getDocs } from 'firebase/firestore';
+import { Link } from 'react-router';
 import { db } from '../../firebase/configfb';
 import './Candidate.css';
 
@@ -34,7 +35,7 @@ const Candidate = () => {
         user.city?.toLowerCase() || '',
         ...(user.skills || []).map(skill => skill.toLowerCase())
       ];
-      return keywords.every(k => 
+      return keywords.every(k =>
         userKeywords.some(userKeyword => userKeyword.includes(k))
       );
     });
@@ -129,7 +130,14 @@ const Candidate = () => {
                                 <i className="mdi mdi-map-marker"></i> {user.city || "Location unknown"}
                               </li>
                               <li className="list-inline-item">
-                                <i className="mdi mdi-wallet"></i> ${user.hourlyRate || "0"} / hour
+                                <i className="mdi mdi-wallet"></i>
+                                {user.cvUrl ? (
+                                  <Link className='cv-link' to={user.cvUrl} target="_blank" rel="noopener noreferrer">
+                                    Till CV
+                                  </Link>
+                                ) : (
+                                  <p>Ingen CV-länk</p>
+                                )}
                               </li>
                             </ul>
                           </div>

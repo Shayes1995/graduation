@@ -4,6 +4,7 @@ import { getAuth, signOut } from 'firebase/auth';
 import contactBlack from './contact-black.svg';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import './Navbar.css';
 
 const Navbar = () => {
   const [userName, setUserName] = useState('');
@@ -55,7 +56,7 @@ const Navbar = () => {
   };
 
   const adminSearch = () => {
-    navigate('/candidate');
+    navigate('/admin/search');
     setDropdownVisible(false);
   };
 
@@ -66,7 +67,7 @@ const Navbar = () => {
 
   return (
     <header className="pt-3 mb-4 navBar">
-      <div className="d-flex align-items-center mx-3 justify-content-center justify-content-md-between">
+      <div className="d-flex align-items-center mx-3 justify-content-center justify-content-md-between tesbar">
         <div className="col-md-3 mb-2 mb-md-0">
           <NavLink to="/" className="d-inline-flex link-body-emphasis text-decoration-none">
             <img src={LogoMainGreen} alt="Main Logo" width="160" height="64" />
@@ -74,7 +75,7 @@ const Navbar = () => {
         </div>
 
         <ul className="nav col-12 fs-6 col-md-auto mb-3 justify-content-center mb-md-0">
-          <li><NavLink to="/" className="nav-link px-2 link-dark" activeClassName="active">Lediga jobb</NavLink></li>
+          <li><NavLink to="/jobs" className="nav-link px-2 link-dark" activeClassName="active">Lediga jobb</NavLink></li>
           <li><NavLink to="/academy" className="nav-link px-2 link-dark" activeClassName="active">Academy</NavLink></li>
           <li><NavLink to="/candidates" className="nav-link px-2 link-dark" activeClassName="active">För jobbsökande</NavLink></li>
           <li><NavLink to="/companies" className="nav-link px-2 link-dark" activeClassName="active">För företag</NavLink></li>
@@ -84,8 +85,20 @@ const Navbar = () => {
         </ul>
 
         <div className="col-md-3 text-end">
-          {user || admin ? (
-            <button onClick={handleLogout} className="btn btn-secondary">Logout</button>
+          {userName ? (
+            <div className="dropdown m-0 p-0 col-md-3 text-end">
+              <span onClick={toggleDropdown} className="dropdown-toggle" role="button">
+                {userName}
+              </span>
+              {dropdownVisible && (
+                <div className="dropdown-menu dropdown-menu-right show">
+                  {user && <button onClick={toMyPage} className="dropdown-item">MyPage</button>}
+                  {admin && <button onClick={adminAddJob} className="dropdown-item">Add job</button>}
+                  {admin && <button onClick={adminSearch} className="dropdown-item">Search Users</button>}
+                  <button onClick={handleLogout} className="dropdown-item">Logout</button>
+                </div>
+              )}
+            </div>
           ) : (
             <NavLink to="/login" className="d-inline-flex link-body-emphasis text-decoration-none">
               <img src={contactBlack} alt="Contact Black" width="40" height="32" />

@@ -1,28 +1,69 @@
 .my-page-container {
-    max-width: 600px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 50px;
 }
 
-.my-page-container h2 {
+.my-page-container h3,
+h1 {
+    text-align: left;
+    margin-bottom: 20px;
+    color: #047364;
+}
+
+.profile-card {
+    display: flex;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+    width: 50%; /* Bild och namn tar upp halva bredden */
 }
 
-.form-group {
-    margin-bottom: 20px;
+.profile-img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #555;
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 50%; /* Den andra halvan tar upp 50% av bredden */
+    padding-left: 20px; /* Flytta texten lite åt höger */
+}
+
+.profile-info h4 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.profile-info p {
+    margin-bottom: 5px;
+}
+
+.profile-info .info-row {
+    display: flex;
+    justify-content: flex-start;
+    padding: 5px 0;
+}
+
+.profile-info .info-row label {
+    margin-right: 10px; /* Lite mellanrum mellan label och text */
 }
 
 textarea,
@@ -38,41 +79,20 @@ input[type="text"] {
     transition: border-color 0.2s;
 }
 
+
 textarea:focus,
 input[type="text"]:focus {
     border-color: #007bff;
 }
 
-.skills-input-container {
-    display: flex;
-    gap: 10px;
-}
-
-.skills-input-container input[type="text"] {
-    flex: 1;
-}
-
-.btn {
-    padding: 8px 16px;
-    font-size: 14px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
 .btn-secondary {
-    background-color: #6c757d;
-    color: #fff;
+    padding: 5px 12px;
+    font-size: 0.9em;
+    border-radius: 5px;
+    background-color:#6c757d;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 .btn-secondary:hover {
@@ -85,6 +105,7 @@ input[type="text"]:focus {
     margin: 10px 0 0 0;
 }
 
+
 .skills-list li {
     display: flex;
     justify-content: space-between;
@@ -96,6 +117,7 @@ input[type="text"]:focus {
     font-size: 14px;
 }
 
+
 .skills-list li button {
     background: none;
     border: none;
@@ -106,6 +128,8 @@ input[type="text"]:focus {
     transition: color 0.2s;
 }
 
+
 .skills-list li button:hover {
     color: #ff0000;
 }
+

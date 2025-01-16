@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/configfb';
+import  './Candidate.css'
 
 const Candidate = () => {
   const [keyword, setKeyword] = useState('');
@@ -17,7 +18,7 @@ const Candidate = () => {
 
   return (
     <section className="section homePage">
-      <div className="candidatePage">
+      <div className="candidatePage py-4">
         <div className="justify-content-center row">
           <div className="col-lg-12">
             <div className="candidate-list-widgets mb-4">
@@ -40,7 +41,7 @@ const Candidate = () => {
                     <div className="filler-job-form">
                       <i className="uil uil-clipboard-notes"></i>
                       <select
-                        className="form-select selectForm__inner"
+                        className="searchSelect form-select selectForm__inner"
                         data-trigger="true"
                         name="choices-single-categories"
                         id="choices-single-categories"
@@ -53,8 +54,8 @@ const Candidate = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="col-lg-3">
-                    <div className="d-flex">
+                  <div className="col-lg-3 m-0 p-0 text-end">
+                    <div className="searchDiv">
                       <button type="submit" className="btn btn-primary">
                         <i className="uil uil-filter"></i> Search
                       </button>
@@ -133,11 +134,7 @@ const Candidate = () => {
           <div className="mt-4 pt-2 col-lg-12">
             <nav aria-label="Page navigation example">
               <div className="pagination job-pagination mb-0 justify-content-center">
-                <li className="page-item disabled">
-                  <a className="page-link" tabindex="-1" href="#">
-                    <i className="mdi mdi-chevron-double-left fs-15"></i>
-                  </a>
-                </li>
+                
                 <li className="page-item active">
                   <a className="page-link" href="#">
                     1
@@ -158,11 +155,7 @@ const Candidate = () => {
                     4
                   </a>
                 </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">
-                    <i className="mdi mdi-chevron-double-right fs-15"></i>
-                  </a>
-                </li>
+                
               </div>
             </nav>
           </div>

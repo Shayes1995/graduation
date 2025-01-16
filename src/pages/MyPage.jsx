@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebase/configfb';
 import { getAuth } from 'firebase/auth';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import './MyPage.css';
 
 const MyPage = () => {
@@ -15,7 +14,7 @@ const MyPage = () => {
     const [skills, setSkills] = useState([]);
     const [skillInput, setSkillInput] = useState('');
     const [cvUrl, setCvUrl] = useState('');
-    const [profilePic, setProfilePic] = useState('');
+    const [profilePicUrl, setProfilePicUrl] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [message, setMessage] = useState('');
     const auth = getAuth();
@@ -35,7 +34,7 @@ const MyPage = () => {
                     setBio(userData.bio || '');
                     setSkills(userData.skills || []);
                     setCvUrl(userData.cvUrl || '');
-                    setProfilePic(userData.profilePic || ''); // Add the profile picture URL from Firestore
+                    setProfilePicUrl(userData.profilePicUrl || ''); // Add the profile picture URL from Firestore
                 }
             }
         };
@@ -56,38 +55,6 @@ const MyPage = () => {
         setSkills(newSkills);
     };
 
-    const handleProfilePicChange = async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const storage = getStorage();
-            const storageRef = ref(storage, `profilePics/${user.uid}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
-
-            uploadTask.on(
-                'state_changed',
-                (snapshot) => {
-                    // Optional: Track progress here
-                },
-                (error) => {
-                    console.error('Error uploading file:', error);
-                },
-                async () => {
-                    // Get the download URL after upload
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    setProfilePic(downloadURL);
-
-                    // Update Firestore with the new profile picture URL
-                    const userDoc = doc(db, 'users', user.uid);
-                    await updateDoc(userDoc, {
-                        profilePic: downloadURL,
-                    });
-
-                    setMessage('Profile picture updated successfully!');
-                }
-            );
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!user) {
@@ -105,7 +72,7 @@ const MyPage = () => {
                 bio,
                 skills,
                 cvUrl,
-                profilePic,
+                profilePicUrl,
             });
             setMessage('Profile updated successfully!');
             setIsEditing(false); // Stop editing after save
@@ -128,20 +95,11 @@ const MyPage = () => {
             <div className="profile-card">
                 <div className="profile-card-header">
                     <img
-                        src={profilePic || 'https://bootdey.com/img/Content/avatar/avatar7.png'}
+                        src={profilePicUrl || 'https://bootdey.com/img/Content/avatar/avatar7.png'}
                         alt="User Avatar"
                         className="profile-img"
                     />
                     <h4>{firstName} {lastName || 'User Name'}</h4>
-                    <button onClick={() => document.getElementById('fileInput').click()} className="btn btn-secondary">
-                        Change picture
-                    </button>
-                    <input
-                        type="file"
-                        id="fileInput"
-                        style={{ display: 'none' }}
-                        onChange={handleProfilePicChange}
-                    />
                 </div>
 
                 {isEditing ? (
@@ -238,6 +196,15 @@ const MyPage = () => {
                                 placeholder="Enter your CV URL"
                             />
                         </div>
+                        <div className="form-group">
+                            <label>Profile Picture URL</label>
+                            <input
+                                type="text"
+                                value={profilePicUrl}
+                                onChange={(e) => setProfilePicUrl(e.target.value)}
+                                placeholder="Enter your profile picture URL"
+                            />
+                        </div>
                         <button type="submit" className="btn btn-primary">
                             Save
                         </button>
@@ -253,6 +220,7 @@ const MyPage = () => {
                         <p><strong>Bio:</strong> {bio || 'No bio provided'}</p>
                         <p><strong>Skills:</strong> {skills.length > 0 ? skills.join(', ') : 'No skills added'}</p>
                         <p><strong>CV URL:</strong> {cvUrl ? <a href={cvUrl} target="_blank" rel="noopener noreferrer">{cvUrl}</a> : 'No CV URL provided'}</p>
+                        <p><strong>Profile Picture URL:</strong> {profilePicUrl ? <a href={profilePicUrl} target="_blank" rel="noopener noreferrer">{profilePicUrl}</a> : 'No profile picture URL provided'}</p>
                         <button onClick={handleEditClick} className="btn btn-secondary">
                             Edit Profile
                         </button>
@@ -264,5 +232,3 @@ const MyPage = () => {
 };
 
 export default MyPage;
-
-

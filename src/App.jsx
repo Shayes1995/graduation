@@ -59,11 +59,11 @@ const App = () => {
         },
         {
           path: 'candidate',
-          element: <Candidate />
-        },
-        {
-          path: 'details/:id',
-          element: <DetailsAds />
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              <Candidate />
+            </ProtectedRoute>
+          )
         }
       ]
     }

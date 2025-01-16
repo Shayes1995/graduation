@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LogoMainGreen from './logo_main_green.svg';
+import { getAuth, signOut } from 'firebase/auth';
 import contactBlack from './contact-black.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -26,10 +27,23 @@ const Navbar = () => {
   }, [user, admin]);
 
   const handleLogout = () => {
-    Cookies.remove('user');
-    Cookies.remove('admin');
-    navigate('/login');
-  };
+    const auth = getAuth();
+    signOut(auth) 
+        .then(() => {
+            Cookies.remove('user');
+            Cookies.remove('admin');
+            localStorage.removeItem('user');
+            localStorage.removeItem('admin');
+
+            setUserName(''); // nollställa användarnamnet
+            setDropdownVisible(false); // stänging fö dropdown-menyn
+            navigate('/');
+        })
+        .catch((error) => {
+            console.error("Fel vid utloggning:", error);
+        });
+};
+
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);

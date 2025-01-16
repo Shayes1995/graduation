@@ -28,26 +28,36 @@ const Navbar = () => {
 
   const handleLogout = () => {
     const auth = getAuth();
-    signOut(auth) 
-        .then(() => {
-            Cookies.remove('user');
-            Cookies.remove('admin');
-            localStorage.removeItem('user');
-            localStorage.removeItem('admin');
+    signOut(auth)
+      .then(() => {
+        Cookies.remove('user');
+        Cookies.remove('admin');
+        localStorage.removeItem('user');
+        localStorage.removeItem('admin');
 
-            setUserName(''); // nollställa användarnamnet
-            setDropdownVisible(false); // stänging fö dropdown-menyn
-            navigate('/');
-        })
-        .catch((error) => {
-            console.error("Fel vid utloggning:", error);
-        });
-};
+        setUserName(''); // nollställa användarnamnet
+        setDropdownVisible(false); // stänging fö dropdown-menyn
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error("Fel vid utloggning:", error);
+      });
+  };
 
-const toMyPage = () => {
-  navigate('/my-page');
-  setDropdownVisible(false);
-};
+  const toMyPage = () => {
+    navigate('/my-page');
+    setDropdownVisible(false);
+  };
+
+  const adminAddJob = () => {
+    navigate('/admin/add-posts');
+    setDropdownVisible(false);
+  };
+
+  const adminSearch = () => {
+    navigate('/admin/search');
+    setDropdownVisible(false);
+  };
 
 
   const toggleDropdown = () => {
@@ -82,8 +92,8 @@ const toMyPage = () => {
               {dropdownVisible && (
                 <div className="dropdown-menu dropdown-menu-right show">
                   {user && <button onClick={toMyPage} className="dropdown-item">MyPage</button>}
-                  {admin && <button onClick={() => navigate('/admin/add-posts')} className="dropdown-item">Add job</button>}
-                  {admin && <button onClick={() => navigate('/admin/search')} className="dropdown-item">Search Users</button>}
+                  {admin && <button onClick={adminAddJob} className="dropdown-item">Add job</button>}
+                  {admin && <button onClick={adminSearch} className="dropdown-item">Search Users</button>}
                   <button onClick={handleLogout} className="dropdown-item">Logout</button>
                 </div>
               )}

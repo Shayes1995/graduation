@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, query, where } from 'firebase/firestore';
+import { Query } from 'firebase/firestore';
 import { useNavigate } from 'react-router';
 import { getAuth } from 'firebase/auth';
 import { db } from '../../firebase/configfb';
@@ -159,6 +160,8 @@ const Adslist = () => {
             await setDoc(applicationRef, applicationData);
 
             console.log('skickad annons')
+            setHasApplied(true);
+            setShowModal(false);
         } catch (error) {
             console.error("Fel vid ansökan:", error);
 
@@ -344,7 +347,7 @@ const Adslist = () => {
                     </div>
                 </div>
             </div>
-            
+
             {/* Modal för att visa information om den valda annonsen */}
             <AdsModal
                 show={showModal}

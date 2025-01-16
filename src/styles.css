@@ -92,3 +92,9 @@
     .mt-1 {
         margin-top: 0.25rem!important;
     }
+
+
+    .nav-link.active {
+        background-color:  #047364 !important; 
+        color:#fff !important;
+      }

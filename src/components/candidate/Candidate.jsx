@@ -139,6 +139,14 @@ const Candidate = () => {
                                   <p>Ingen CV-länk</p>
                                 )}
                               </li>
+                              <li className="list-inline-item">
+                                <i className="mdi mdi-wallet"></i>
+                                {user.phoneNumber ? (
+                                  <p>{user.phoneNumber}</p>
+                                ) : (
+                                  <p>Inget mobilnummer</p>
+                                )}
+                              </li>
                             </ul>
                           </div>
                         </div>

@@ -44,6 +44,11 @@ const Navbar = () => {
         });
 };
 
+const toMyPage = () => {
+  navigate('/my-page');
+  setDropdownVisible(false);
+};
+
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -75,7 +80,7 @@ const Navbar = () => {
               </span>
               {dropdownVisible && (
                 <div className="dropdown-menu dropdown-menu-right show">
-                  {user && <button onClick={() => navigate('/my-page')} className="dropdown-item">MyPage</button>}
+                  {user && <button onClick={toMyPage} className="dropdown-item">MyPage</button>}
                   {admin && <button onClick={() => navigate('/admin/add-posts')} className="dropdown-item">Add job</button>}
                   {admin && <button onClick={() => navigate('/admin/search')} className="dropdown-item">Search Users</button>}
                   <button onClick={handleLogout} className="dropdown-item">Logout</button>

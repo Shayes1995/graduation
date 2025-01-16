@@ -30,10 +30,20 @@ const Logincomponent = () => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
+           
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists()) {
+                const userData = userDoc.data();
+
+                const completeUserData = {
+                    uid: user.uid,
+                    role: userData.role || "user", 
+                    ...userData,
+                };
+    
                 console.log('User data:', userDoc.data());
                 Cookies.set('user', JSON.stringify(userDoc.data()), { expires: 7 }); // Set cookie for 7 days
+                localStorage.setItem('user', JSON.stringify(completeUserData));
                 navigate('/'); // Redirect to home page
             } else {
                 console.error('Ingen användardata hittades!');

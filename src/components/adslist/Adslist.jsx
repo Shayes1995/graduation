@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router';
+import { getAuth } from 'firebase/auth';
 import { db } from '../../firebase/configfb';
 import './Adslist.css';
 import './AdsModal.css';
@@ -20,13 +22,15 @@ const Adslist = () => {
     const [openDropdown, setOpenDropdown] = useState(null);
     const [selectedAd, setSelectedAd] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [hasApplied, setHasApplied] = useState(false);
+    const navigate = useNavigate();
 
     const handleAdClick = (ad) => {
         setSelectedAd(ad);
         setShowModal(true);
     };
 
-    // Funktion för att hämta annonser från Firestore
+    // Funktion för att hämta annonser 
     const fetchAds = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'ads'));
@@ -58,10 +62,16 @@ const Adslist = () => {
         }
     };
 
-    // Kör funktionen direkt när komponenten laddas
+    //hämtning av alla annonser
     useEffect(() => {
         fetchAds();
     }, []);
+
+    useEffect(() => {
+        if (selectedAd) {
+            checkIfApplied();
+        }
+    }, [selectedAd]);
 
     // för filtrering av annonser
     useEffect(() => {
@@ -90,7 +100,7 @@ const Adslist = () => {
         setFilteredAds(filtered);
     }, [selectedCategories, selectedTaskTypes, selectedEmploymentTypes, selectedLanguages, selectedOtherOptions, ads]);
 
-    // Funktion för att hantera checkboxes
+    // Funktion för checkboxes
     const handleCheckboxChange = (event, setState) => {
         const value = event.target.value;
         setState(prev =>
@@ -103,6 +113,58 @@ const Adslist = () => {
     const toggleDropdown = (dropdownName) => {
         setOpenDropdown(prev => (prev === dropdownName ? null : dropdownName));
     };
+
+    const checkIfApplied = async () => {
+        const auth = getAuth();
+        const user = auth.currentUser || JSON.parse(localStorage.getItem('user'));
+
+        if (!user) return;
+
+        const applicationsRef = collection(db, 'applications');
+        const q = query(applicationsRef, where("userId", "==", user.uid), where("adId", "==", selectedAd.id));
+        const querySnapshot = await getDocs(q);
+
+        setHasApplied(!querySnapshot.empty);
+    };
+
+    const handleApply = async () => {
+        if (!selectedAd) return;
+
+        try {
+            const auth = getAuth();
+            const user = auth.currentUser || JSON.parse(localStorage.getItem('user'));
+
+
+            if (!user) {
+                console.log('logga in')
+                navigate('/login');
+                return;
+            }
+
+            const applicationRef = doc(collection(db, 'applications'));
+
+            const applicationData = {
+                userId: user.uid,
+                adId: selectedAd.id,
+                adminId: selectedAd.adminUid || "Unknown",
+                title: selectedAd.title,
+                location: selectedAd.location,
+                category: selectedAd.category,
+                jobform: selectedAd.jobform,
+                startDate: selectedAd.startDate,
+                typeOfAssignment: selectedAd.typeOfAssignment,
+                createdAt: new Date(),
+            };
+
+            await setDoc(applicationRef, applicationData);
+
+            console.log('skickad annons')
+        } catch (error) {
+            console.error("Fel vid ansökan:", error);
+
+        }
+    };
+
 
     return (
         <div className='main-home'>
@@ -282,6 +344,7 @@ const Adslist = () => {
                     </div>
                 </div>
             </div>
+            
             {/* Modal för att visa information om den valda annonsen */}
             <AdsModal
                 show={showModal}
@@ -298,7 +361,13 @@ const Adslist = () => {
                                     {selectedAd.introDesc}
                                 </p>
                                 <div className="button-modal">
-                                    <button className='apply-btn'>Ansök</button>
+                                    <button
+                                        className={`apply-btn ${hasApplied ? 'disabled' : ''}`}
+                                        onClick={!hasApplied ? handleApply : null}
+                                        disabled={hasApplied}
+                                    >
+                                        {hasApplied ? "Redan ansökt" : "Ansök"}
+                                    </button>
                                     <button className='save-btn'>
                                         Spara
                                         <FaRegHeart className='modal-icon' />
@@ -340,19 +409,53 @@ const Adslist = () => {
                                 </ul>
                             </div>
                             <div className="about-job">
-                                <h2>Vi söker dig</h2>
+                                <h2>Vi söker dig som</h2>
                                 <ul>
                                     {selectedAd.requirements.map((task, index) => (
                                         <li className='li-modal' key={index}>{task}</li>
                                     ))}
                                 </ul>
                             </div>
+                            {selectedAd.personalMerits && selectedAd.personalMerits.length > 0 ? (
+                                <div className="about-job">
+                                    <h3>Det är meriterande om du</h3>
+                                    <ul>
+                                        {selectedAd.personalMerits.map((task, index) => (
+                                            <li className='li-modal' key={index}>{task}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : (
+                                null
+                            )}
+                            {selectedAd.personalTraits && selectedAd.personalTraits.length > 0 ? (
+                                <div className="about-job">
+                                    <h3>För att lyckas i rollen har du följande personliga egenskaper</h3>
+                                    <ul>
+                                        {selectedAd.personalTraits.map((task, index) => (
+                                            <li className='li-modal' key={index}>{task}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : (
+                                null
+                            )}
 
-
-
-
-
-
+                            <div className="">
+                                <div className="button-modal">
+                                    <button
+                                        className={`apply-btn ${hasApplied ? 'disabled' : ''}`}
+                                        onClick={!hasApplied ? handleApply : null}
+                                        disabled={hasApplied}
+                                    >
+                                        {hasApplied ? "Redan ansökt" : "Ansök"}
+                                    </button>
+                                    <button className='save-btn'>
+                                        Spara
+                                        <FaRegHeart className='modal-icon' />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                     </div>

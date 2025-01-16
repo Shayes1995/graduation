@@ -100,3 +100,16 @@
     margin-top: 1rem;
     font-weight: 600;
 }
+
+.about-job h3 {
+    font-size: 1rem;
+    color: black;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.apply-btn.disabled {
+    background-color: gray;
+    cursor: not-allowed;
+    pointer-events: none;
+}

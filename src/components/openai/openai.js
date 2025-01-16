@@ -4,17 +4,17 @@ const openai = new OpenAI({
   apiKey: "klistra in vår api nyckel",
 });
 
-/* const completion = openai.chat.completions.create({
+const completion = openai.chat.completions.create({
   model: "gpt-4o-mini",
   store: true,
   messages: [
-    {"role": "user", "content": "kan du med inte mer än 20 ord ge mig 10 viktiga personliga egenskaper och 10 av de viktigaste tekniska verktygen för att lyckas i rollen som programerare"},
+    {"role": "user", "content": "kan du med inte mer än 20 ord ge mig 10 viktiga personliga egenskaper och 10 av de viktigaste tekniska verktygen för att lyckas i rollen som Informationssäkerhetskonsult till Simovits Consulting"},
   ],
-}); */
+}); 
 
-/* completion.then((result) => console.log(result.choices[0].message)); */
+completion.then((result) => console.log(result.choices[0].message));
 
-const response = await openai.chat.completions.create({
+/* const response = await openai.chat.completions.create({
   model: "gpt-4o-mini",
   messages: [
     {
@@ -37,4 +37,4 @@ const response = await openai.chat.completions.create({
     },
   ],
 });
-console.log(response.choices[0]);
+console.log(response.choices[0]); */

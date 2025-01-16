@@ -13,6 +13,7 @@ import MyPage from './pages/MyPage';
 import AdminSearch from './pages/AdminSearch';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import Candidate from './components/candidate/Candidate';
+import DetailsAds from './pages/DetailsAds';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -59,6 +60,10 @@ const App = () => {
         {
           path: 'candidate',
           element: <Candidate />
+        },
+        {
+          path: 'details/:id',
+          element: <DetailsAds />
         }
       ]
     }

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/configfb';
 import './Adslist.css';
+import './AdsModal.css';
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { BsBell } from "react-icons/bs";
+import AdsModal from './AdsModal';
 
 const Adslist = () => {
     const [ads, setAds] = useState([]);
@@ -16,6 +18,13 @@ const Adslist = () => {
     const [selectedLanguages, setSelectedLanguages] = useState([]);
     const [selectedOtherOptions, setSelectedOtherOptions] = useState([]);
     const [openDropdown, setOpenDropdown] = useState(null);
+    const [selectedAd, setSelectedAd] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleAdClick = (ad) => {
+        setSelectedAd(ad);
+        setShowModal(true);
+    };
 
     // Funktion för att hämta annonser från Firestore
     const fetchAds = async () => {
@@ -247,7 +256,7 @@ const Adslist = () => {
                         {filteredAds.length > 0 ? (
                             <div className='card'>
                                 {filteredAds.map(ad => (
-                                    <div className='job-box' key={ad.id}>
+                                    <div className='job-box' key={ad.id} onClick={() => handleAdClick(ad)}>
                                         <div className="all-card-container">
                                             <div className="left-side">
                                                 <div className="img-box">
@@ -273,6 +282,84 @@ const Adslist = () => {
                     </div>
                 </div>
             </div>
+            {/* Modal för att visa information om den valda annonsen */}
+            <AdsModal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+            >
+                {selectedAd ? (
+                    <div className='ad-container-specific'>
+                        <div className="specific-content">
+                            <div className="header-h1">
+                                <h1 className='header-modal'>{selectedAd.title}</h1>
+                            </div>
+                            <div className="introDesc">
+                                <p>
+                                    {selectedAd.introDesc}
+                                </p>
+                                <div className="button-modal">
+                                    <button className='apply-btn'>Ansök</button>
+                                    <button className='save-btn'>
+                                        Spara
+                                        <FaRegHeart className='modal-icon' />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="location-info">
+                                <div className="info-box-modal">
+                                    <p><strong>Plats:</strong> {selectedAd.location}</p>
+                                    <p><strong>Jobbkategori:</strong> {selectedAd.category}</p>
+                                    <p><strong>Omfattning:</strong> {selectedAd.jobform}</p>
+                                </div>
+                                <div className="info-box-modal">
+                                    <p><strong>Startdatum:</strong> {selectedAd.startDate}</p>
+                                    <p><strong>Typ av uppdrag:</strong> {selectedAd.typeOfAssignment}</p>
+                                </div>
+                            </div>
+                            <div className="about-job">
+                                <h2>Om tjänsten</h2>
+                                <p>{selectedAd.detailedDesc}</p>
+                            </div>
+                            {selectedAd.offerings && selectedAd.offerings.length > 0 ? (
+                                <div className="about-job">
+                                    <h2>Kvalifikationer</h2>
+                                    <p>{selectedAd.offerings}</p>
+                                </div>
+                            ) : (
+                                null
+                            )}
+                            <div className="about-job">
+                                <h2>Arbetsuppgifter</h2>
+                                <p>
+                                    {selectedAd.jobtaskDesc}
+                                </p>
+                                <ul>
+                                    {selectedAd.tasks.map((task, index) => (
+                                        <li className='li-modal' key={index}>{task}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="about-job">
+                                <h2>Vi söker dig</h2>
+                                <ul>
+                                    {selectedAd.requirements.map((task, index) => (
+                                        <li className='li-modal' key={index}>{task}</li>
+                                    ))}
+                                </ul>
+                            </div>
+
+
+
+
+
+
+                        </div>
+
+                    </div>
+                ) : (
+                    <p>Laddar annonsinformation...</p>
+                )}
+            </AdsModal>
         </div>
     );
 };

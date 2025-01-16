@@ -29,19 +29,19 @@ const Candidate = () => {
     const users = querySnapshot.docs.map(doc => doc.data());
 
     const filteredUsers = users.filter(user => {
-      const userKeywords = [
-        user.firstName?.toLowerCase() || '',
-        user.lastName?.toLowerCase() || '',
-        user.city?.toLowerCase() || '',
-        ...(user.skills || []).map(skill => skill.toLowerCase())
-      ];
-      return keywords.every(k =>
-        userKeywords.some(userKeyword => userKeyword.includes(k))
-      );
+        const userKeywords = [
+            user.firstName?.toLowerCase() || '',
+            user.lastName?.toLowerCase() || '',
+            user.city?.toLowerCase() || '',
+            ...(user.skills || []).map(skill => skill.toLowerCase())
+        ];
+        return keywords.some(k =>
+            userKeywords.some(userKeyword => userKeyword.includes(k))
+        );
     });
 
     setResults(filteredUsers);
-  };
+};
 
   return (
     <section className="section homePage">

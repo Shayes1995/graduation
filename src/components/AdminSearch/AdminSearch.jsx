@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/configfb';
 
 const AdminSearch = () => {
@@ -8,10 +8,26 @@ const AdminSearch = () => {
 
     const handleSearch = async (e) => {
         e.preventDefault();
-        const q = query(collection(db, 'users'), where('skills', 'array-contains', keyword));
+        if (!keyword.trim()) return;
+
+        const keywordArray = keyword.split(',').map(k => k.trim().toLowerCase());
+        const q = query(collection(db, 'users'));
         const querySnapshot = await getDocs(q);
         const users = querySnapshot.docs.map(doc => doc.data());
-        setResults(users);
+
+        const filteredUsers = users.filter(user => {
+            const userKeywords = [
+                user.firstName?.toLowerCase() || '',
+                user.lastName?.toLowerCase() || '',
+                user.city?.toLowerCase() || '',
+                ...(user.skills || []).map(skill => skill.toLowerCase())
+            ];
+            return keywordArray.every(k => 
+                userKeywords.some(userKeyword => userKeyword.includes(k))
+            );
+        });
+
+        setResults(filteredUsers);
     };
 
     return (
@@ -19,7 +35,7 @@ const AdminSearch = () => {
             <form onSubmit={handleSearch}>
                 <input
                     type="text"
-                    placeholder="Search by skill"
+                    placeholder="Search by name, city, or skill"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                 />
@@ -30,7 +46,7 @@ const AdminSearch = () => {
                     <div key={index} className="user-card">
                         <h3>{user.firstName} {user.lastName}</h3>
                         <p>{user.bio}</p>
-                        <p>Skills: {user.skills.join(', ')}</p>
+                        <p>Skills: {(user.skills || []).join(', ')}</p>
                         <a href={user.cvUrl} target="_blank" rel="noopener noreferrer">View CV</a>
                     </div>
                 ))}

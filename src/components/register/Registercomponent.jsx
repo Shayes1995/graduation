@@ -3,7 +3,7 @@ import { db } from '../../firebase/configfb';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import './Registercomponent.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const RegisterComponent = () => {
     const [formData, setFormData] = useState({
@@ -17,6 +17,8 @@ const RegisterComponent = () => {
         password: '',
         confirmPassword: '',
     });
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,6 +48,7 @@ const RegisterComponent = () => {
             });
 
             alert('User registered successfully!');
+            navigate('/login'); // Redirect to login page after successful registration
         } catch (error) {
             console.error('Error registering user:', error);
             alert('Error registering user: ' + error.message);

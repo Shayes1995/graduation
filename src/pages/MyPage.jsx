@@ -231,8 +231,18 @@ const MyPage = () => {
                         <p><strong>Address:</strong> {address}</p>
                         <p><strong>City:</strong> {city}</p>
                         <p><strong>Bio:</strong> {bio || 'No bio provided'}</p>
-                        <p><strong>Skills:</strong> {skills.length > 0 ? skills.join(', ') : 'No skills added'}</p>
                         <p><strong>CV URL:</strong> {cvUrl ? <a href={cvUrl} target="_blank" rel="noopener noreferrer">{cvUrl}</a> : 'No CV URL provided'}</p>
+                        <p><strong>Skills:</strong></p>
+                        <div className="d-flex flex-wrap gap-2">
+                            {skills.length > 0
+                                ? skills.map((skill, idx) => (
+                                    <span key={idx} className="badge bg-soft-secondary fs-14">
+                                        {skill}
+                                    </span>
+                                ))
+                                : 'No skills added'}
+                        </div>
+                        {/* <p><strong>Skills:</strong> {skills.length > 0 ? skills.join(', ') : 'No skills added'}</p> */}
                         {/* <p><strong>Profile Picture URL:</strong> {profilePicUrl ? <a href={profilePicUrl} target="_blank" rel="noopener noreferrer">{profilePicUrl}</a> : 'No profile picture URL provided'}</p> */}
                         <button onClick={handleEditClick} className="btn btn-secondary">
                             Edit Profile

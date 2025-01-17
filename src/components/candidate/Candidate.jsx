@@ -6,7 +6,7 @@ import './Candidate.css';
 import { use } from 'react';
 
 const Candidate = () => {
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState("");
   const [keywords, setKeywords] = useState([]);
   const [results, setResults] = useState([]);
 
@@ -14,30 +14,30 @@ const Candidate = () => {
     e.preventDefault();
     if (keyword.trim() && !keywords.includes(keyword.trim().toLowerCase())) {
       setKeywords([...keywords, keyword.trim().toLowerCase()]);
-      setKeyword('');
+      setKeyword("");
     }
   };
 
   const handleRemoveKeyword = (keywordToRemove) => {
-    setKeywords(keywords.filter(k => k !== keywordToRemove));
+    setKeywords(keywords.filter((k) => k !== keywordToRemove));
   };
 
   const handleSearch = async () => {
     if (keywords.length === 0) return;
 
-    const q = query(collection(db, 'users'));
+    const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
-    const users = querySnapshot.docs.map(doc => doc.data());
+    const users = querySnapshot.docs.map((doc) => doc.data());
 
-    const filteredUsers = users.filter(user => {
+    const filteredUsers = users.filter((user) => {
       const userKeywords = [
-        user.firstName?.toLowerCase() || '',
-        user.lastName?.toLowerCase() || '',
-        user.city?.toLowerCase() || '',
-        ...(user.skills || []).map(skill => skill.toLowerCase())
+        user.firstName?.toLowerCase() || "",
+        user.lastName?.toLowerCase() || "",
+        user.city?.toLowerCase() || "",
+        ...(user.skills || []).map((skill) => skill.toLowerCase()),
       ];
-      return keywords.some(k =>
-        userKeywords.some(userKeyword => userKeyword.includes(k))
+      return keywords.some((k) =>
+        userKeywords.some((userKeyword) => userKeyword.includes(k))
       );
     });
 
@@ -51,10 +51,14 @@ const Candidate = () => {
     setResults(users);
   }
 
+  useEffect(() => {
+    fetchUsersEffect();
+  }, []);
+
   return (
     <section className="section homePage">
       <div className="candidatePage">
-        <div className="justify-content-center row">
+
 
             <div className="candidate-list-widgets">
               <form className='form-candidate' onSubmit={handleAddKeyword}>
@@ -82,6 +86,7 @@ const Candidate = () => {
 
                     </div>
                   </div>
+               
                 </div>
               </form>
               <div className="keywords-list">
@@ -98,25 +103,31 @@ const Candidate = () => {
                   </span>
                 ))}
               </div>
-          </div>
+            </div>
+   
         </div>
         <div className="row">
           <div className="col-lg-12">
             <div className="candidate-list">
-              <p>
+              <p className='results-p'>
                 {results.length} träffar 
               </p>
               {results.length > 0 ? (
                 results.map((user, index) => (
-                  
-                  <div key={index} className="candidate-list-box bookmark-post card mt-4">
-                    <div className="p-4 card-body">
+                  <div
+                    key={index}
+                    className="candidate-list-box bookmark-post card"
+                  >
+                    <div className="card-body">
                       <div className="align-items-center row">
                         <div className="col-auto">
                           <div className="candidate-list-images">
                             <a href="#">
                               <img
-                                src={user.profilePicUrl || "https://bootdey.com/img/Content/avatar/avatar2.png"}
+                                src={
+                                  user.profilePicUrl ||
+                                  "https://bootdey.com/img/Content/avatar/avatar2.png"
+                                }
                                 alt="User Avatar"
                                 className="avatar-md img-thumbnail rounded-circle"
                               />
@@ -130,23 +141,24 @@ const Candidate = () => {
                                 {user.firstName} {user.lastName}
                               </a>
                               <span className="badge bg-warning ms-1">
-                                <i className="mdi mdi-star align-middle"></i>{user.rating || "N/A"}
+                                <i className="mdi mdi-star align-middle"></i>
+                                {user.rating || "N/A"}
                               </span>
                             </h5>
-                            <p className="text-muted mb-2">{user.jobTitle || "No title"}</p>
+                            <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                              {user.skills?.map((skill, idx) => (
+                                <span
+                                  key={idx}
+                                  className="badge bg-soft-secondary fs-14 mt-1"
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
                             <ul className="list-inline mb-0 text-muted">
                               <li className="list-inline-item">
-                                <i className="mdi mdi-map-marker"></i> {user.city || "Location unknown"}
-                              </li>
-                              <li className="list-inline-item">
-                                <i className="mdi mdi-wallet"></i>
-                                {user.cvUrl ? (
-                                  <Link className='cv-link' to={user.cvUrl} target="_blank" rel="noopener noreferrer">
-                                    Till CV
-                                  </Link>
-                                ) : (
-                                  <p>Ingen CV-länk</p>
-                                )}
+                                <i className="mdi mdi-map-marker"></i>{" "}
+                                {user.city || "Location unknown"}
                               </li>
                               <li className="list-inline-item">
                                 <i className="mdi mdi-wallet"></i>
@@ -160,28 +172,33 @@ const Candidate = () => {
                           </div>
                         </div>
                         <div className="col-lg-4">
-                          <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                            {user.skills?.map((skill, idx) => (
-                              <span key={idx} className="badge bg-soft-secondary fs-14 mt-1">
-                                {skill}
-                              </span>
-                            ))}
+                          <div className="align-items-center row">
+                            <li className="list-inline-item d-flex justify-content-end">
+                              <i className="mdi mdi-wallet"></i>
+                              {user.cvUrl ? (
+                                <Link
+                                  className="cv-link"
+                                  to={user.cvUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <img className="avatar-md img-thumbnail" src="https://cdn-icons-png.freepik.com/512/36/36049.png" alt="Icon Image"></img>
+                                </Link>
+                              ) : (
+                                <p>Ingen CV-länk</p>
+                              )}
+                            </li>
                           </div>
                         </div>
-                      </div>
-                      <div className="favorite-icon">
-                        <a href="#">
-                          <i className="mdi mdi-heart fs-18"></i>
-                        </a>
                       </div>
                     </div>
                   </div>
                 ))
               ) : (
                 <p>No candidates found matching your search.</p>
-              )}
+              )} 
             </div>
-          </div>
+         
         </div>
         <div className="row">
           <div className="mt-4 pt-2 col-lg-12">
@@ -213,6 +230,7 @@ const Candidate = () => {
         </div>
       </div>
     </section>
+    
   );
 };
 

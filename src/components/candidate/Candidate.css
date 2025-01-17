@@ -10,8 +10,15 @@
     height: 3rem;
 }
 
+section {
+    display: flex;
+    flex-direction: column
+}
+
+
 .searchDiv button {
     margin-left: 1rem;
+
 }
 
 .filler-job-form {
@@ -37,10 +44,19 @@
 
 .button-candidate {
     width: 15rem;
-   
-
     background: none;
     background-color: rgb(133, 115, 232);
+}
+
+.candidate-list-box {
+    border-radius: 0;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0;
+}
+
+.candidate-list-box:hover {
+    background-color: rgb(239, 248, 241);
+    transform: scale(1.01);
 }
 
 .searchSelect {
@@ -54,18 +70,24 @@
 }
 
 .candidatePage {
-    width: 1000px;
+    width: 100%;
     background-color: white;
 
+}
+
+.results-p {
+    margin-top: 1rem;
 }
 
 .form-candidate {
     width: 100%;
     display: flex;
     flex-direction: row;
-    margin: 0;
+    margin-bottom: .5rem;
+
 }
 
 .input-search {
     height: 2.5rem;
 }
+

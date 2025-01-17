@@ -76,7 +76,7 @@ const AddPosts = () => {
 
         if (selectedDate < today) {
             
-            setPost({ ...post, deadlineDate: '' }); /
+            setPost({ ...post, deadlineDate: '' }); 
         } else {
             setPost({ ...post, deadlineDate: e.target.value });
         }

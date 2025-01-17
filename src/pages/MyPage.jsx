@@ -8,8 +8,8 @@ const MyPage = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
+    const [phoneNumber, setPhone] = useState('');
+    const [adress, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [bio, setBio] = useState('');
     const [skills, setSkills] = useState([]);
@@ -30,8 +30,8 @@ const MyPage = () => {
                     setFirstName(userData.firstName || '');
                     setLastName(userData.lastName || '');
                     setEmail(userData.email || '');
-                    setPhone(userData.phone || '');
-                    setAddress(userData.address || '');
+                    setPhone(userData.phoneNumber || '');
+                    setAddress(userData.adress || '');
                     setCity(userData.city || '');
                     setBio(userData.bio || '');
                     setSkills(userData.skills || []);
@@ -69,8 +69,8 @@ const MyPage = () => {
                 firstName,
                 lastName,
                 email,
-                phone,
-                address,
+                phoneNumber,
+                adress,
                 city,
                 bio,
                 skills,
@@ -138,7 +138,7 @@ const MyPage = () => {
                             <label>Phone</label>
                             <input
                                 type="text"
-                                value={phone}
+                                value={phoneNumber}
                                 onChange={(e) => setPhone(e.target.value)}
                                 placeholder="Enter your phone number"
                             />
@@ -147,7 +147,7 @@ const MyPage = () => {
                             <label>Address</label>
                             <input
                                 type="text"
-                                value={address}
+                                value={adress}
                                 onChange={(e) => setAddress(e.target.value)}
                                 placeholder="Enter your address"
                             />
@@ -227,12 +227,22 @@ const MyPage = () => {
                         <p><strong>First name:</strong> {firstName}</p>
                         <p><strong>Last name:</strong> {lastName}</p>
                         <p><strong>Email:</strong> {email}</p>
-                        <p><strong>Phone:</strong> {phone}</p>
-                        <p><strong>Address:</strong> {address}</p>
+                        <p><strong>Phone:</strong> {phoneNumber}</p>
+                        <p><strong>Address:</strong> {adress}</p>
                         <p><strong>City:</strong> {city}</p>
                         <p><strong>Bio:</strong> {bio || 'No bio provided'}</p>
-                        <p><strong>Skills:</strong> {skills.length > 0 ? skills.join(', ') : 'No skills added'}</p>
                         <p><strong>CV URL:</strong> {cvUrl ? <a href={cvUrl} target="_blank" rel="noopener noreferrer">{cvUrl}</a> : 'No CV URL provided'}</p>
+                        <p><strong>Skills:</strong></p>
+                        <div className="d-flex flex-wrap gap-2">
+                            {skills.length > 0
+                                ? skills.map((skill, idx) => (
+                                    <span key={idx} className="badge bg-soft-secondary fs-14">
+                                        {skill}
+                                    </span>
+                                ))
+                                : 'No skills added'}
+                        </div>
+                        {/* <p><strong>Skills:</strong> {skills.length > 0 ? skills.join(', ') : 'No skills added'}</p> */}
                         {/* <p><strong>Profile Picture URL:</strong> {profilePicUrl ? <a href={profilePicUrl} target="_blank" rel="noopener noreferrer">{profilePicUrl}</a> : 'No profile picture URL provided'}</p> */}
                         <button onClick={handleEditClick} className="btn btn-secondary">
                             Edit Profile

@@ -73,7 +73,7 @@ const Navbar = () => {
   };
 
   const adminSearch = () => {
-    navigate('/admin/search');
+    navigate('/candidate');
     setDropdownVisible(false);
   };
 

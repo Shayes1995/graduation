@@ -73,7 +73,7 @@ const Handleapplications = () => {
                         </li>
                         <li>
                             <button onClick={() => setActiveComponent('seeApplications')}>
-                                <span>Se ansökningar</span>
+                                <span>Gå igenom ansökningar</span>
                             </button>
                         </li>
                         <li>

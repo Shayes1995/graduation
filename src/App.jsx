@@ -14,6 +14,7 @@ import AdminSearch from './pages/AdminSearch';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import Candidate from './components/candidate/Candidate';
 import DetailsAds from './pages/DetailsAds';
+import AdminApplications from './pages/AdminApplications';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -64,7 +65,15 @@ const App = () => {
               <Candidate />
             </ProtectedRoute>
           )
-        }
+        },
+        {
+          path: 'admin/applications',
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              <AdminApplications />
+            </ProtectedRoute>
+          )
+        },
       ]
     }
   ]);

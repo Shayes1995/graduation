@@ -1,0 +1,56 @@
+.applications-handle-container {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+
+}
+
+.rendering-box {
+    max-height: 80vh;
+    /* Sätter en fast höjd */
+    overflow-y: auto;
+    /* Gör så att innehållet blir scrollbart om det blir för stort */
+    overflow-x: hidden;
+    /* Förhindrar horisontell scroll */
+    padding: 10px;
+}
+
+
+.main-contet-d-row {
+    display: flex;
+    flex-direction: row;
+    max-width: 1250px;
+
+}
+
+.box-left-links {
+    margin-right: 1rem;
+    background-color: white;
+    padding: 1rem;
+    width: 250px;
+}
+
+.links-container ol {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.links-container button {
+    background: none;
+    color: black;
+    text-align: left;
+    width: 100%;
+}
+
+.box-right-content {
+
+    width: 100%;
+    max-width: 1000px;
+    padding: 1rem;
+    background-color: white;
+
+}

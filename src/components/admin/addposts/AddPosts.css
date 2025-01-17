@@ -1,10 +1,12 @@
 .addpostspage-container {
     display: flex;
     justify-content: center;
+
 }
 
 .df-rw {
     display: flex;
+    flex-direction: column;
 }
 
 .df-rw-comp {
@@ -13,11 +15,17 @@
 }
 
 .form-add-post {
-
+    padding: 0 1rem 0 1rem;
     width: 1000px;
     background-color: white;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-    padding: 1rem;
+}
+
+.d-row-option {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #cccccc9b;
 }
 
 .box-form-post {
@@ -74,6 +82,7 @@ label {
 .btn-group button {
     width: 10rem;
     height: 2.5rem;
+    margin-right: 1rem;
 }
 
 .btn-group {

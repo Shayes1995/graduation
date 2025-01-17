@@ -71,6 +71,11 @@ const Candidate = () => {
                       </button>
                     </div>
                   </div>
+                  <div className="col-lg-3 m-0 p-0 text-end">
+                      <button onClick={handleSearch} className="btn btn-primary">
+                        Search
+                      </button>
+                  </div> 
                 </div>
               </form>
               <div className="keywords-list">
@@ -86,11 +91,6 @@ const Candidate = () => {
                     </button>
                   </span>
                 ))}
-              </div>
-              <div className="searchDiv mt-3">
-                <button onClick={handleSearch} className="btn btn-primary">
-                  Search
-                </button>
               </div>
             </div>
           </div>

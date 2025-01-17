@@ -56,7 +56,7 @@ const Navbar = () => {
   };
 
   const adminSearch = () => {
-    navigate('/admin/search');
+    navigate('/candidate');
     setDropdownVisible(false);
   };
 
@@ -75,7 +75,7 @@ const Navbar = () => {
         </div>
 
         <ul className="nav col-12 fs-6 col-md-auto mb-3 justify-content-center mb-md-0">
-          <li><NavLink to="/jobs" className="nav-link px-2 link-dark" activeClassName="active">Lediga jobb</NavLink></li>
+          <li><NavLink to="/" className="nav-link px-2 link-dark" activeClassName="active">Lediga jobb</NavLink></li>
           <li><NavLink to="/academy" className="nav-link px-2 link-dark" activeClassName="active">Academy</NavLink></li>
           <li><NavLink to="/candidates" className="nav-link px-2 link-dark" activeClassName="active">För jobbsökande</NavLink></li>
           <li><NavLink to="/companies" className="nav-link px-2 link-dark" activeClassName="active">För företag</NavLink></li>

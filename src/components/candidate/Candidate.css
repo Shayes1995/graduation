@@ -1,7 +1,46 @@
 .searchDiv {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    height: 3rem;
+}
+
+.searchDiv button {
+    margin-left: 1rem;
+}
+
+.filler-job-form {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
+    align-items: center;
+    align-content: center;
+}
+
+.d-arow {
+    display: flex;
+    width: 100%;
+    height: 3rem;
+}
+
+.div-btn {
+    width: 100%;
+    height: 2.5rem;
+}
+
+.button-candidate {
+    width: 15rem;
+   
+
+    background: none;
+    background-color: rgb(133, 115, 232);
 }
 
 .searchSelect {
@@ -12,4 +51,21 @@
 .cv-link {
     color: blue;
     text-decoration: underline;
+}
+
+.candidatePage {
+    width: 1000px;
+    background-color: white;
+
+}
+
+.form-candidate {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+}
+
+.input-search {
+    height: 2.5rem;
 }

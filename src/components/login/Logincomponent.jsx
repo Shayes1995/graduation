@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { db } from '../../firebase/configfb';
 import { signInWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import './Logincomponent.css';
 import Logo from './awlogo.svg';
 import LogoGmail from './gmail.png';
@@ -31,17 +31,17 @@ const Logincomponent = () => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-           
+
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists()) {
                 const userData = userDoc.data();
 
                 const completeUserData = {
                     uid: user.uid,
-                    role: userData.role || "user", 
+                    role: userData.role || "user",
                     ...userData,
                 };
-    
+
                 console.log('User data:', userDoc.data());
                 Cookies.set('user', JSON.stringify(userDoc.data()), { expires: 7 }); // Set cookie for 7 days
                 localStorage.setItem('user', JSON.stringify(completeUserData));
@@ -56,10 +56,11 @@ const Logincomponent = () => {
         }
     };
 
+
     const handleGoogleSignIn = async () => {
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
-        
+
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
@@ -68,12 +69,12 @@ const Logincomponent = () => {
             const userDoc = await getDoc(userRef);
 
             if (!userDoc.exists()) {
-                
+
                 await setDoc(userRef, {
                     uid: user.uid,
                     name: user.displayName,
                     email: user.email,
-                    role: "user", 
+                    role: "user",
                 });
             }
 
@@ -97,9 +98,13 @@ const Logincomponent = () => {
                     </div>
                     <h2 className='center'>Logga in</h2>
                     <div className="google-btn">
-                        <button onClick={handleGoogleSignIn}>
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="google logo" />
-                            Logga in med Google
+                        <button className='google-btn-btn' onClick={handleGoogleSignIn}>
+                            <div className="container-google">
+                                <img src={LogoGmail} alt="google logo" />
+                            </div>
+                            <p>
+                                Logga in med Google
+                            </p>
                         </button>
                     </div>
                     <p className='center'>Logga in på ditt AcademicWorks konto</p>

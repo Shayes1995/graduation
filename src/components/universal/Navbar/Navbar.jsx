@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import LogoMainGreen from './logo_main_green.svg';
 import { getAuth, signOut } from 'firebase/auth';
-import contactBlack from './contact-black.svg';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import LogoMainGreen from './logo_main_green.svg';
+import contactBlack from './contact-black.svg';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -13,19 +13,38 @@ const Navbar = () => {
   const admin = Cookies.get('admin');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      const userData = JSON.parse(user);
-      setUserName(`${userData.firstName} ${userData.lastName}`);
-    } else if (admin) {
-      const adminData = JSON.parse(admin);
-      if (adminData.firstName && adminData.lastName) {
-        setUserName(`${adminData.firstName} ${adminData.lastName} (Admin)`);
+  const updateUser = () => {
+    try {
+      const storedUser = Cookies.get('user');
+      const storedAdmin = Cookies.get('admin');
+
+      let userData = storedUser ? JSON.parse(storedUser) : null;
+      let adminData = storedAdmin ? JSON.parse(storedAdmin) : null;
+
+      if (adminData?.firstName) {
+        setUserName(`${adminData.firstName} (Admin)`);
+      } else if (userData?.firstName && userData?.lastName) {
+        setUserName(`${userData.firstName.trim()} ${userData.lastName.trim()}`);
+      } else if (userData?.name) {
+        setUserName(userData.name);
       } else {
-        setUserName('Admin');
+        setUserName('');
       }
+    } catch (error) {
+      console.error("Fel vid parsning av användardata:", error);
+      setUserName('');
     }
-  }, [user, admin]);
+  };
+
+  useEffect(() => {
+    updateUser();
+
+    const interval = setInterval(() => {
+      updateUser();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     const auth = getAuth();
@@ -35,16 +54,14 @@ const Navbar = () => {
         Cookies.remove('admin');
         localStorage.removeItem('user');
         localStorage.removeItem('admin');
-
-        setUserName(''); // nollställa användarnamnet
-        setDropdownVisible(false); // stänging fö dropdown-menyn
+        setUserName('');
+        setDropdownVisible(false);
         navigate('/');
       })
-      .catch((error) => {
-        console.error("Fel vid utloggning:", error);
-      });
+      .catch(error => console.error("Fel vid utloggning:", error));
   };
 
+  //Navigationsfunktioner
   const toMyPage = () => {
     navigate('/my-page');
     setDropdownVisible(false);
@@ -60,11 +77,14 @@ const Navbar = () => {
     setDropdownVisible(false);
   };
 
+  const adminApplications = () => {
+    navigate('/admin/applications');
+    setDropdownVisible(false);
+  };
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
-
   return (
     <header className="pt-3 mb-4 navBar">
       <div className="d-flex align-items-center mx-3 justify-content-center justify-content-md-between tesbar">
@@ -75,7 +95,7 @@ const Navbar = () => {
         </div>
 
         <ul className="nav col-12 fs-6 col-md-auto mb-3 justify-content-center mb-md-0">
-          <li><NavLink to="/jobs" className="nav-link px-2 link-dark" activeClassName="active">Lediga jobb</NavLink></li>
+          <li><NavLink to="/" className="nav-link px-2 link-dark" activeClassName="active">Lediga jobb</NavLink></li>
           <li><NavLink to="/academy" className="nav-link px-2 link-dark" activeClassName="active">Academy</NavLink></li>
           <li><NavLink to="/candidates" className="nav-link px-2 link-dark" activeClassName="active">För jobbsökande</NavLink></li>
           <li><NavLink to="/companies" className="nav-link px-2 link-dark" activeClassName="active">För företag</NavLink></li>
@@ -85,7 +105,7 @@ const Navbar = () => {
         </ul>
 
         <div className="col-md-3 text-end">
-          {userName ? (
+          {userName ?  (
             <div className="dropdown m-0 p-0 col-md-3 text-end">
               <span onClick={toggleDropdown} className="dropdown-toggle" role="button">
                 {userName}
@@ -95,6 +115,7 @@ const Navbar = () => {
                   {user && <button onClick={toMyPage} className="dropdown-item">MyPage</button>}
                   {admin && <button onClick={adminAddJob} className="dropdown-item">Add job</button>}
                   {admin && <button onClick={adminSearch} className="dropdown-item">Search Users</button>}
+                  {admin && <button onClick={adminApplications} className="dropdown-item">Hantera ansökningar</button>}
                   <button onClick={handleLogout} className="dropdown-item">Logout</button>
                 </div>
               )}
@@ -111,3 +132,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, setDoc, query, where } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, query, where, getDoc } from 'firebase/firestore';
 import { Query } from 'firebase/firestore';
 import { useNavigate } from 'react-router';
 import { getAuth } from 'firebase/auth';
@@ -54,10 +54,10 @@ const Adslist = () => {
         switch (category?.toLowerCase()) {
             case 'it':
                 return 'https://cdn.academicwork.com/business-areas/system_developer.png';
-            case 'finance':
-                return 'https://cdn.academicwork.com/business-areas/finance.png';
-            case 'marketing':
-                return 'https://cdn.academicwork.com/business-areas/marketing.png';
+            case 'ekonomi':
+                return 'https://cdn.academicwork.com/business-areas/securities.png';
+            case 'kundservice':
+                return 'https://cdn.academicwork.com/business-areas/support.png';
             default:
                 return 'https://cdn.academicwork.com/business-areas/default.png';
         }
@@ -130,24 +130,22 @@ const Adslist = () => {
 
     const handleApply = async () => {
         if (!selectedAd) return;
-
+    
         try {
             const auth = getAuth();
             const user = auth.currentUser || JSON.parse(localStorage.getItem('user'));
-
-
+    
             if (!user) {
-                console.log('logga in')
+                console.log('Logga in krävs');
                 navigate('/login');
                 return;
             }
-
+    
             const applicationRef = doc(collection(db, 'applications'));
-
+    
             const applicationData = {
                 userId: user.uid,
-                adId: selectedAd.id,
-                adminId: selectedAd.adminUid || "Unknown",
+                adId: selectedAd.id,  // ✅ Inkludera annons-id
                 title: selectedAd.title,
                 location: selectedAd.location,
                 category: selectedAd.category,
@@ -155,18 +153,48 @@ const Adslist = () => {
                 startDate: selectedAd.startDate,
                 typeOfAssignment: selectedAd.typeOfAssignment,
                 createdAt: new Date(),
+                userName: `${user.firstName} ${user.lastName}`,
+                userEmail: user.email,
+                userPhone: user.phone || "Okänt",
+                userCv: user.cvUrl || "Ingen CV-länk"
             };
-
+    
+            // 🔹 Steg 1: Lägg till i "applications"
             await setDoc(applicationRef, applicationData);
-
-            console.log('skickad annons')
+    
+            // 🔹 Steg 2: Uppdatera eller skapa "collectionapplications"
+            const collectionApplicationRef = doc(db, 'collectionapplications', selectedAd.id);
+            const collectionApplicationSnap = await getDoc(collectionApplicationRef);
+    
+            if (collectionApplicationSnap.exists()) {
+                // 🔸 Uppdatera befintligt dokument
+                await setDoc(collectionApplicationRef, {
+                    applicants: [...collectionApplicationSnap.data().applicants, applicationData]
+                }, { merge: true });
+            } else {
+                // 🔸 Skapa ett nytt dokument där **adminId** och **adId** ligger utanför applicants-arrayen
+                await setDoc(collectionApplicationRef, {
+                    adId: selectedAd.id,  // ✅ Annonsens ID
+                    adminId: selectedAd.adminUid || "Unknown",  // ✅ Flyttat adminId hit
+                    title: selectedAd.title,
+                    location: selectedAd.location,
+                    category: selectedAd.category,
+                    jobform: selectedAd.jobform,
+                    startDate: selectedAd.startDate,
+                    typeOfAssignment: selectedAd.typeOfAssignment,
+                    applicants: [applicationData]  // ✅ Endast användardata i arrayen
+                });
+            }
+    
+            console.log('Ansökan sparad korrekt i båda databaserna');
             setHasApplied(true);
             setShowModal(false);
+    
         } catch (error) {
             console.error("Fel vid ansökan:", error);
-
         }
     };
+    
 
 
     return (

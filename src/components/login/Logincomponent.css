@@ -90,3 +90,41 @@ span a {
     cursor: pointer;
     width: 100%;
 }
+
+.google-btn {
+    display: flex;
+    justify-content: center;
+}
+
+.google-btn-btn p {
+
+    padding: 1rem;
+    font-size: 14px;
+    text-align: center;
+    margin: 0;
+}
+
+.google-btn button {
+    background: none;
+    color: black;
+    display: flex;
+    border: 1px solid gray;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 2rem;
+    padding: 0rem 2rem 0rem 2rem;
+    margin: .5rem;
+}
+
+.google-btn-btn img {
+    width: 30px;
+    height: 30px;
+}
+
+.container-google {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    height: 100%;
+}

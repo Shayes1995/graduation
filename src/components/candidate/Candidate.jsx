@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { Link } from 'react-router';
 import { db } from '../../firebase/configfb';
 import './Candidate.css';
+import { use } from 'react';
 
 const Candidate = () => {
   const [keyword, setKeyword] = useState('');
@@ -29,46 +30,56 @@ const Candidate = () => {
     const users = querySnapshot.docs.map(doc => doc.data());
 
     const filteredUsers = users.filter(user => {
-        const userKeywords = [
-            user.firstName?.toLowerCase() || '',
-            user.lastName?.toLowerCase() || '',
-            user.city?.toLowerCase() || '',
-            ...(user.skills || []).map(skill => skill.toLowerCase())
-        ];
-        return keywords.some(k =>
-            userKeywords.some(userKeyword => userKeyword.includes(k))
-        );
+      const userKeywords = [
+        user.firstName?.toLowerCase() || '',
+        user.lastName?.toLowerCase() || '',
+        user.city?.toLowerCase() || '',
+        ...(user.skills || []).map(skill => skill.toLowerCase())
+      ];
+      return keywords.some(k =>
+        userKeywords.some(userKeyword => userKeyword.includes(k))
+      );
     });
 
     setResults(filteredUsers);
-};
+  };
+
+  const fetchUsersEffect = async () => {
+    const q = query(collection(db, 'users'));
+    const querySnapshot = await getDocs(q);
+    const users = querySnapshot.docs.map(doc => doc.data());
+    setResults(users);
+  }
 
   return (
     <section className="section homePage">
-      <div className="candidatePage py-4">
+      <div className="candidatePage">
         <div className="justify-content-center row">
-          <div className="col-lg-12">
-            <div className="candidate-list-widgets mb-4">
-              <form onSubmit={handleAddKeyword}>
-                <div className="g-2 row">
-                  <div className="col-lg-6 col-md-4">
-                    <div className="filler-job-form">
-                      <i className="uil uil-briefcase-alt"></i>
-                      <input
-                        id="exampleFormControlInput1"
-                        placeholder="Enter keywords (e.g., name, city, skill)"
-                        type="search"
-                        className="form-control filler-job-input-box form-control"
-                        value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
-                      />
-                    </div>
+
+            <div className="candidate-list-widgets">
+              <form className='form-candidate' onSubmit={handleAddKeyword}>
+                <div className="d-arow">
+                  <div className="filler-job-form">
+                    <i className="uil uil-briefcase-alt"></i>
+                    <input
+                      id=""
+                      placeholder="Enter keywords (e.g., name, city, skill)"
+                      type="search"
+                      className="input-search"
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
+                    />
                   </div>
-                  <div className="col-lg-3 m-0 p-0 text-end">
+                  <div className="div-btn">
                     <div className="searchDiv">
-                      <button type="submit" className="btn btn-primary">
+                      <button type="submit" className="button-candidate">
                         <i className="uil uil-filter"></i> Add Keyword
                       </button>
+
+                      <button onClick={handleSearch} className="button-candidate">
+                        Search
+                      </button>
+
                     </div>
                   </div>
                 </div>
@@ -87,19 +98,17 @@ const Candidate = () => {
                   </span>
                 ))}
               </div>
-              <div className="searchDiv mt-3">
-                <button onClick={handleSearch} className="btn btn-primary">
-                  Search
-                </button>
-              </div>
-            </div>
           </div>
         </div>
         <div className="row">
           <div className="col-lg-12">
             <div className="candidate-list">
+              <p>
+                {results.length} träffar 
+              </p>
               {results.length > 0 ? (
                 results.map((user, index) => (
+                  
                   <div key={index} className="candidate-list-box bookmark-post card mt-4">
                     <div className="p-4 card-body">
                       <div className="align-items-center row">

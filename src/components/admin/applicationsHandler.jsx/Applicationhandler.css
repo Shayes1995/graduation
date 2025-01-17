@@ -1,0 +1,28 @@
+.all-around-applications {
+    width: 1000px;
+}
+
+.all-around-applications h3 {
+    font-size: 16px;
+    color: #047364;
+    text-align: center;
+}
+
+.central-content {
+    display: flex;
+    flex-direction: row;
+}
+
+.applications-card {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+
+.application-card {
+    margin: 1rem;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    width: 20rem;
+}

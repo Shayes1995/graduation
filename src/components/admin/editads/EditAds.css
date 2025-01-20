@@ -1,0 +1,87 @@
+.edit-ads-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.ads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.ad-card {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.save-btn, .cancel-btn {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.save-btn {
+    background-color: #b5b8b6;
+    color: rgb(0, 0, 0);
+}
+
+.cancel-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.input-group-row {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.form-edit-ads {
+    width: 100%;
+}
+

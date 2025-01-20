@@ -5,6 +5,8 @@ import './Handleapplications.css';
 import AddPosts from '../addposts/AddPosts';
 import Candidate from '../../candidate/Candidate';
 import ApplicationHandler from '../applicationsHandler.jsx/Applicationhandler';
+import EditAds from '../editads/EditAds';
+
 
 const Handleapplications = () => {
     const [applications, setApplications] = useState([]);
@@ -67,7 +69,7 @@ const Handleapplications = () => {
                             </button>
                         </li>
                         <li>
-                            <button className={activeComponent === 'seeAds' ? 'active' : ''} onClick={() => setActiveComponent('seeAds')}>
+                            <button className={activeComponent === 'editAds' ? 'active' : ''} onClick={() => setActiveComponent('editAds')}>
                                 <span>Se mina annonser</span>
                             </button>
                         </li>
@@ -89,7 +91,7 @@ const Handleapplications = () => {
                     {activeComponent === 'addPosts' && <AddPosts />}
                     {activeComponent === 'seeUsers' && <Candidate />}
                     {activeComponent === 'seeApplications' && <ApplicationHandler />}
-                    {activeComponent === 'seeAds' && <p></p>}
+                    {activeComponent === 'editAds' && <EditAds />}
                 </div>
             </div>
         </div>

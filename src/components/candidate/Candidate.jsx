@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, getDocs, addDoc, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/configfb';
+import emailjs from "@emailjs/browser";
+
 import './Candidate.css';
+import Admin from '../../pages/Admin';
 
 const Candidate = () => {
   const [keyword, setKeyword] = useState("");
@@ -56,26 +59,85 @@ const Candidate = () => {
     fetchUsersEffect();
   }, []);
 
-  const handleSendMessage = async () => {
-    if (!selectedCandidate || !message.trim()) return;
 
-    console.log('Selected candidate:', selectedCandidate); // Debug log
 
+  const sendEmailNotification = async (userEmail) => {
     try {
-      await addDoc(collection(db, 'messages'), {
-        senderId: 'admin-id', // Replace with actual admin ID
-        receiverId: selectedCandidate.id,
-        message,
-        timestamp: serverTimestamp(),
-      });
-      setMessage("");
-      setShowMessageModal(false);
-      alert('Message sent successfully!');
+      const templateParams = {
+        email_to: userEmail,
+        message: "Du har ett nytt meddelande i ditt konto på AW Talent, logga in för att se det!",
+      };
+
+      await emailjs.send(
+        "service_hl7um1p", 
+        "template_tjpbtzh", 
+        templateParams,
+        "3ZnbOARiW9qmNJMeI" 
+      );
+
+      console.log("Email sent successfully!");
     } catch (error) {
-      console.error('Error sending message:', error);
-      alert('Error sending message. Please try again.');
+      console.error("Error sending email:", error);
     }
   };
+
+  const handleSendMessage = async () => {
+    if (!selectedCandidate || !message.trim()) return;
+  
+    const adminData = JSON.parse(localStorage.getItem("admin"));
+    if (!adminData || !adminData.uid) {
+      alert("Admin UID not found.");
+      return;
+    }
+  
+    const adminUid = adminData.uid;
+    const userUid = selectedCandidate.id;
+    const userEmail = selectedCandidate.email; // Förväntar att användaren har en `email`-egenskap
+  
+    try {
+      const conversationId = adminUid < userUid ? `${adminUid}_${userUid}` : `${userUid}_${adminUid}`;
+      const conversationRef = doc(db, "messages", conversationId);
+  
+      const conversationSnap = await getDoc(conversationRef);
+  
+      if (conversationSnap.exists()) {
+        await updateDoc(conversationRef, {
+          messages: [
+            ...conversationSnap.data().messages,
+            {
+              senderId: adminUid,
+              receiverId: userUid,
+              message,
+              timestamp: new Date(),
+            },
+          ],
+        });
+      } else {
+        await setDoc(conversationRef, {
+          participants: [adminUid, userUid],
+          messages: [
+            {
+              senderId: adminUid,
+              receiverId: userUid,
+              message,
+              timestamp: new Date(),
+            },
+          ],
+        });
+      }
+  
+      // Skicka e-post till användaren
+      await sendEmailNotification(userEmail);
+  
+      setMessage("");
+      setShowMessageModal(false);
+      alert("Message sent successfully!");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Error sending message. Please try again.");
+    }
+  };
+  
 
   return (
     <section className="section homePage">
@@ -97,10 +159,10 @@ const Candidate = () => {
               <div className="div-btn">
                 <div className="searchDiv">
                   <button type="submit" className="button-candidate">
-                    <i className="uil uil-filter"></i> Add Keyword
+                    <i className="uil uil-filter"></i> Ange sökord
                   </button>
                   <button onClick={handleSearch} className="button-candidate">
-                    Search
+                    Sök
                   </button>
                 </div>
               </div>
@@ -126,7 +188,7 @@ const Candidate = () => {
         <div className="col-lg-12">
           <div className="candidate-list">
             <p className='results-p'>
-              {results.length} träffar 
+              {results.length} träffar
             </p>
             {results.length > 0 ? (
               results.map((user, index) => (
@@ -212,7 +274,7 @@ const Candidate = () => {
                               setShowMessageModal(true);
                             }}
                           >
-                            Message
+                            Skicka meddelande
                           </button>
                         </div>
                       </div>
@@ -228,9 +290,9 @@ const Candidate = () => {
       </div>
 
       {showMessageModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setShowMessageModal(false)}>
+        <div className="modal-message">
+          <div className="modal-content-message">
+            <span className="close-message" onClick={() => setShowMessageModal(false)}>
               &times;
             </span>
             <h2>Send Message to {selectedCandidate?.firstName} {selectedCandidate?.lastName}</h2>
@@ -240,7 +302,7 @@ const Candidate = () => {
               placeholder="Type your message here..."
             />
             <button onClick={handleSendMessage} className="btn btn-primary">
-              Send
+              Skicka
             </button>
           </div>
         </div>

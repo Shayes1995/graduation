@@ -15,6 +15,7 @@ import Candidate from './components/candidate/Candidate';
 import DetailsAds from './pages/DetailsAds';
 import AdminApplications from './pages/AdminApplications';
 import Inbox from './pages/Inbox'; // Import Inbox component
+import EditForm from './components/admin/editads/EditForm';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -71,6 +72,14 @@ const App = () => {
           element: (
             <ProtectedRoute requiredRole="admin">
               <AdminApplications />
+            </ProtectedRoute>
+          )
+        },
+        {
+          path: 'edit-ad/:id',
+          element: (
+            <ProtectedRoute requiredRole="admin">
+              <EditForm />
             </ProtectedRoute>
           )
         },

@@ -1,0 +1,29 @@
+.inbox-container {
+  padding: 20px;
+}
+
+.messages-list {
+  margin-bottom: 20px;
+}
+
+.message-item {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.message-item:hover {
+  background-color: #f0f0f0;
+}
+
+.message-details {
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.message-details textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+}

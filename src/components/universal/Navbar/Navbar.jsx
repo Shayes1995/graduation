@@ -113,9 +113,11 @@ const Navbar = () => {
               {dropdownVisible && (
                 <div className="dropdown-menu dropdown-menu-right show">
                   {user && <button onClick={toMyPage} className="dropdown-item">MyPage</button>}
+                  {user && <NavLink to="/inbox" className="dropdown-item">Inbox</NavLink>}
                   {admin && <button onClick={adminAddJob} className="dropdown-item">Add job</button>}
                   {admin && <button onClick={adminSearch} className="dropdown-item">Search Users</button>}
                   {admin && <button onClick={adminApplications} className="dropdown-item">Hantera ansökningar</button>}
+                  {admin && <NavLink to="/inbox" className="dropdown-item">Inbox</NavLink>}
                   <button onClick={handleLogout} className="dropdown-item">Logout</button>
                 </div>
               )}

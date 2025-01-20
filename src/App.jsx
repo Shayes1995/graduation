@@ -5,7 +5,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Rootlayout from './rootlayout/Rootlayout';
 import Login from './pages/Login';
 import Home from './pages/Home';
-import { db } from './firebase/configfb';
 import Admin from './pages/Admin';
 import Register from './pages/Register';
 import AdminAddPosts from './pages/AdminAddPosts';
@@ -15,6 +14,7 @@ import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import Candidate from './components/candidate/Candidate';
 import DetailsAds from './pages/DetailsAds';
 import AdminApplications from './pages/AdminApplications';
+import Inbox from './pages/Inbox'; // Import Inbox component
 
 const App = () => {
   const router = createBrowserRouter([
@@ -73,6 +73,10 @@ const App = () => {
               <AdminApplications />
             </ProtectedRoute>
           )
+        },
+        {
+          path: 'inbox', // Add route for inbox
+          element: <Inbox />
         },
       ]
     }

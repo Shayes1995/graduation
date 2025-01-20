@@ -18,7 +18,7 @@ section {
 
 .searchDiv button {
     margin-left: 1rem;
-
+    
 }
 
 .filler-job-form {
@@ -48,7 +48,7 @@ section {
     background-color: rgb(133, 115, 232);
 }
 
-.candidate-list-box {
+.candidate-list-box{
     border-radius: 0;
     border-bottom: 1px solid #e0e0e0;
     padding: 0;
@@ -91,3 +91,6 @@ section {
     height: 2.5rem;
 }
 
+.candidate-list{
+    padding: 1rem;
+}

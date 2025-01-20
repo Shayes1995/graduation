@@ -62,22 +62,22 @@ const Handleapplications = () => {
                 <div className="links-container">
                     <ol>
                         <li>
-                            <button onClick={() => setActiveComponent('addPosts')}>
+                            <button className={activeComponent === 'addPosts' ? 'active' : ''} onClick={() => setActiveComponent('addPosts')}>
                                 <span>Skapa jobbannons</span>
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => setActiveComponent('seeAds')}>
+                            <button className={activeComponent === 'seeAds' ? 'active' : ''} onClick={() => setActiveComponent('seeAds')}>
                                 <span>Se mina annonser</span>
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => setActiveComponent('seeApplications')}>
+                            <button className={activeComponent === 'seeApplications' ? 'active' : ''} onClick={() => setActiveComponent('seeApplications')}>
                                 <span>Gå igenom ansökningar</span>
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => setActiveComponent('seeUsers')}>
+                            <button className={activeComponent === 'seeUsers' ? 'active' : ''} onClick={() => setActiveComponent('seeUsers')}>
                                 <span>Se användare</span>
                             </button>
                         </li>

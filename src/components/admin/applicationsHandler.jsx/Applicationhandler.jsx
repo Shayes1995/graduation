@@ -6,9 +6,9 @@ import './Applicationhandler.css';
 const ApplicationHandler = () => {
     const [applications, setApplications] = useState([]);
     const [adminNames, setAdminNames] = useState({});
-    const [showAllApplications, setShowAllApplications] = useState(false); 
+    const [showAllApplications, setShowAllApplications] = useState(false);
     const [filteredApplications, setFilteredApplications] = useState([]);
-    
+
     const adminData = JSON.parse(localStorage.getItem('admin'));
     const loggedInAdminId = adminData?.uid || '';
 
@@ -64,10 +64,11 @@ const ApplicationHandler = () => {
     return (
         <div className="applications-container">
             <div className="all-around-applications">
-                <h2>Lista över ansökningar</h2>
+                <h2>Lista över mina ansökningar</h2>
                 <div className="filter-checkbox">
                     <label>
                         <input
+                            className='checkbox'
                             type="checkbox"
                             checked={showAllApplications}
                             onChange={() => setShowAllApplications(!showAllApplications)}

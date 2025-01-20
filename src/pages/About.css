@@ -14,7 +14,7 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     margin-bottom: 50px;
     display: flex;
-    flex-direction: column; /* Gör att elementen staplas vertikalt */
+    flex-direction: column; 
     gap: 20px;
 }
 
@@ -23,8 +23,8 @@ body {
     font-weight: bold;
     color: #047364;
     font-size: 28px;
-    margin-top: 0; /* Ta bort eventuell standard toppmarginal */
-    margin-bottom: 20px; /* Ger utrymme nedanför rubriken */
+    margin-top: 0; 
+    margin-bottom: 20px; 
 }
 
 .about-container h3 {
@@ -40,10 +40,10 @@ body {
 
 .row {
     display: flex;
-    justify-content: center; /* Centrerar kolumner horisontellt */
-    align-items: flex-start; /* Justerar innehållet i kolumnerna till toppen */
-    flex-wrap: wrap; /* Tillåter radbrytning vid mindre skärmar */
-    gap: 20px; /* Mellanrum mellan kolumnerna */
+    justify-content: center; 
+    align-items: flex-start; 
+    flex-wrap: wrap; 
+    gap: 20px;
     margin: 20px 0;
 }
 

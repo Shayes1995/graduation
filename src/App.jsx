@@ -14,6 +14,8 @@ import AdminSearch from './pages/AdminSearch';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import Candidate from './components/candidate/Candidate';
 import DetailsAds from './pages/DetailsAds';
+import Contact from './pages/Contact';
+import About from './pages/About';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -24,6 +26,18 @@ const App = () => {
         {
           path: '/',
           element: <Home />
+        },
+        {
+          path: 'contact',
+          element: (
+            <Contact />
+          )
+        },
+        {
+          path: 'about',
+          element: (
+            <About />
+          )
         },
         {
           path: 'login',

@@ -43,7 +43,7 @@ section {
 .button-candidate {
     width: 15rem;
     background: none;
-    background-color: rgb(133, 115, 232);
+    background-color: #047364;
 }
 
 .candidate-list-box {

@@ -426,7 +426,7 @@ const AddPosts = () => {
                         </div>
                     </div>
                     <div className="btn-group">
-                        <button type="submit" className="">
+                        <button type="submit" className="light">
                             Skapa Jobbannons
                         </button>
                     </div>

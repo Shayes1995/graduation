@@ -149,8 +149,18 @@ const Candidate = () => {
                             />
                           </a>
                         </div>
+                        <button
+                            className="btn btn-secondary nav-link active"
+                            onClick={() => {
+                              console.log('Selected candidate:', user); // Debug log
+                              setSelectedCandidate(user);
+                              setShowMessageModal(true);
+                            }}
+                          >
+                            Message
+                          </button>
                       </div>
-                      <div className="col-lg-5">
+                      <div className="col-lg-4">
                         <div className="candidate-list-content mt-3 mt-lg-0">
                           <h5 className="fs-19 mb-0">
                             <a className="primary-link" href="#">
@@ -161,22 +171,12 @@ const Candidate = () => {
                               {user.rating || "N/A"}
                             </span>
                           </h5>
-                          <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                            {user.skills?.map((skill, idx) => (
-                              <span
-                                key={idx}
-                                className="badge bg-soft-secondary fs-14 mt-1"
-                              >
-                                {skill}
-                              </span>
-                            ))}
-                          </div>
-                          <ul className="list-inline mb-0 text-muted">
+                          <ul className="list-inline mb-0 text-muted mt-3">
                             <li className="list-inline-item">
                               <i className="mdi mdi-map-marker"></i>{" "}
                               {user.city || "Location unknown"}
                             </li>
-                            <li className="list-inline-item">
+                            <li className="">
                               <i className="mdi mdi-wallet"></i>
                               {user.phoneNumber ? (
                                 <p>{user.phoneNumber}</p>
@@ -187,7 +187,23 @@ const Candidate = () => {
                           </ul>
                         </div>
                       </div>
-                      <div className="col-lg-4">
+                      <div className='col-lg-4'>
+                              <div className='align-items-center'>
+                              <li className="list-inline-item d-flex justify-content-start">
+                          <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                            {user.skills?.map((skill, idx) => (
+                              <span
+                                key={idx}
+                                className="badge bg-soft-secondary fs-14 mt-1"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                          </li>
+                              </div>
+                      </div>
+                      <div className="col-lg-2">
                         <div className="align-items-center row">
                           <li className="list-inline-item d-flex justify-content-end">
                             <i className="mdi mdi-wallet"></i>
@@ -204,16 +220,6 @@ const Candidate = () => {
                               <p>Ingen CV-länk</p>
                             )}
                           </li>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => {
-                              console.log('Selected candidate:', user); // Debug log
-                              setSelectedCandidate(user);
-                              setShowMessageModal(true);
-                            }}
-                          >
-                            Message
-                          </button>
                         </div>
                       </div>
                     </div>

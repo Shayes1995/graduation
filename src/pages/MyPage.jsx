@@ -217,7 +217,7 @@ const MyPage = () => {
                                 placeholder="Enter your profile picture URL"
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="btn btn-primary mLogin">
                             Save
                         </button>
                         {message && <p>{message}</p>}

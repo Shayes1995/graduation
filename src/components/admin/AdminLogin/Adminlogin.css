@@ -30,3 +30,7 @@ input {
     border: 1px solid rgba(128, 128, 128, 0.377);
     width: 100%;
 }
+
+.aLogin {
+    background-color: #047364 !important;
+}

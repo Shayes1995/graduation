@@ -157,7 +157,7 @@ const Candidate = () => {
                               setShowMessageModal(true);
                             }}
                           >
-                            Message
+                            Skicka meddelande
                           </button>
                       </div>
                       <div className="col-lg-4">

@@ -230,7 +230,7 @@ const AddPosts = () => {
                                     name="startDateCal"
                                     value={post.startDateCal}
                                     onChange={handleStartDateChange}
-                                   
+                            
                                 />
                             </div>
 

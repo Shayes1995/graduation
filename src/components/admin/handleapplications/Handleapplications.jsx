@@ -5,6 +5,8 @@ import './Handleapplications.css';
 import AddPosts from '../addposts/AddPosts';
 import Candidate from '../../candidate/Candidate';
 import ApplicationHandler from '../applicationsHandler.jsx/Applicationhandler';
+import EditAds from '../editads/EditAds';
+
 
 const Handleapplications = () => {
     const [applications, setApplications] = useState([]);
@@ -62,22 +64,22 @@ const Handleapplications = () => {
                 <div className="links-container">
                     <ol>
                         <li>
-                            <button onClick={() => setActiveComponent('addPosts')}>
+                            <button className={activeComponent === 'addPosts' ? 'active' : ''} onClick={() => setActiveComponent('addPosts')}>
                                 <span>Skapa jobbannons</span>
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => setActiveComponent('seeAds')}>
+                            <button className={activeComponent === 'editAds' ? 'active' : ''} onClick={() => setActiveComponent('editAds')}>
                                 <span>Se mina annonser</span>
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => setActiveComponent('seeApplications')}>
+                            <button className={activeComponent === 'seeApplications' ? 'active' : ''} onClick={() => setActiveComponent('seeApplications')}>
                                 <span>Gå igenom ansökningar</span>
                             </button>
                         </li>
                         <li>
-                            <button onClick={() => setActiveComponent('seeUsers')}>
+                            <button className={activeComponent === 'seeUsers' ? 'active' : ''} onClick={() => setActiveComponent('seeUsers')}>
                                 <span>Se användare</span>
                             </button>
                         </li>
@@ -89,7 +91,7 @@ const Handleapplications = () => {
                     {activeComponent === 'addPosts' && <AddPosts />}
                     {activeComponent === 'seeUsers' && <Candidate />}
                     {activeComponent === 'seeApplications' && <ApplicationHandler />}
-                    {activeComponent === 'seeAds' && <p></p>}
+                    {activeComponent === 'editAds' && <EditAds />}
                 </div>
             </div>
         </div>

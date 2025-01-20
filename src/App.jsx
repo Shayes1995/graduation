@@ -15,6 +15,7 @@ import Candidate from './components/candidate/Candidate';
 import DetailsAds from './pages/DetailsAds';
 import AdminApplications from './pages/AdminApplications';
 import Inbox from './pages/Inbox'; // Import Inbox component
+
 import Contact from './pages/Contact';
 import About from './pages/About';
 

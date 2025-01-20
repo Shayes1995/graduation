@@ -82,6 +82,11 @@ const Navbar = () => {
     setDropdownVisible(false);
   };
 
+  const toInbox = () => {
+    navigate('/inbox');
+    setDropdownVisible(false);
+  };
+
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
@@ -105,19 +110,20 @@ const Navbar = () => {
         </ul>
 
         <div className="col-md-3 text-end">
-          {userName ?  (
+          {userName ? (
             <div className="dropdown m-0 p-0 col-md-3 text-end">
               <span onClick={toggleDropdown} className="dropdown-toggle" role="button">
                 {userName}
               </span>
               {dropdownVisible && (
                 <div className="dropdown-menu dropdown-menu-right show">
+                  {user && <button onClick={toMyPage} className="dropdown-item">Mina sidor</button>}
                   {user && <button onClick={toMyPage} className="dropdown-item">MyPage</button>}
                   {user && <NavLink to="/inbox" className="dropdown-item">Inbox</NavLink>}
-                  {admin && <button onClick={adminAddJob} className="dropdown-item">Add job</button>}
-                  {admin && <button onClick={adminSearch} className="dropdown-item">Search Users</button>}
-                  {admin && <button onClick={adminApplications} className="dropdown-item">Hantera ansökningar</button>}
-                  {admin && <NavLink to="/inbox" className="dropdown-item">Inbox</NavLink>}
+                  {admin && <button onClick={adminAddJob} className="dropdown-item">Skapa jobbannons</button>}
+                  {admin && <button onClick={adminSearch} className="dropdown-item">Sök användare</button>}
+                  {admin && <button onClick={adminApplications} className="dropdown-item">Rekrytering</button>} 
+                  {admin && <button onClick={toInbox} className="dropdown-item">Inbox</button>}
                   <button onClick={handleLogout} className="dropdown-item">Logout</button>
                 </div>
               )}

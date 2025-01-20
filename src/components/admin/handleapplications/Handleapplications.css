@@ -54,3 +54,18 @@
     background-color: white;
 
 }
+
+
+.links-container button.active {
+    font-weight: bold;
+}
+
+.links-container button.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 2px;
+   
+}

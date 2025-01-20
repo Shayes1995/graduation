@@ -222,7 +222,7 @@ const Candidate = () => {
                             Skicka meddelande
                           </button>
                       </div>
-                      <div className="col-lg-4">
+                      <div className="col-lg-3">
                         <div className="candidate-list-content mt-3 mt-lg-0">
                           <h5 className="fs-19 mb-0">
                             <a className="primary-link" href="#">
@@ -282,16 +282,6 @@ const Candidate = () => {
                               <p>Ingen CV-länk</p>
                             )}
                           </li>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => {
-                              console.log('Selected candidate:', user); // Debug log
-                              setSelectedCandidate(user);
-                              setShowMessageModal(true);
-                            }}
-                          >
-                            Skicka meddelande
-                          </button>
                         </div>
                       </div>
                     </div>

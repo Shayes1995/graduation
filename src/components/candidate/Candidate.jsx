@@ -243,7 +243,7 @@ const Candidate = () => {
 
                         </div>
                       </div>
-                      <div className="col-lg-3">
+                      <div className="col-lg-4">
                         <div className="candidate-list-content mt-3 mt-lg-0">
                           <h5 className="fs-19 mb-0">
                             <a className="primary-link" href="#">

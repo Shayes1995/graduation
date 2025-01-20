@@ -76,7 +76,30 @@ const createAdsCollection = async () => {
     }
 };
 
+const createMessagesCollection = async () => {
+    try {
+        const messagesSnapshot = await getDocs(collection(db, "messages"));
+        if (messagesSnapshot.empty) {
+            console.log("Creating 'messages' collection");
+
+            await setDoc(doc(db, "messages", "sampleMessage"), {
+                senderId: "sampleSenderId",
+                receiverId: "sampleReceiverId",
+                message: "This is a sample message.",
+                timestamp: new Date(),
+            });
+
+            console.log("✅ 'messages' collection created!");
+        } else {
+            console.log("✅ 'messages' collection already exists!");
+        }
+    } catch (error) {
+        console.error("❌ Error creating 'messages' collection:", error);
+    }
+};
+
 createAdsCollection();
 createUsersCollection();
+createMessagesCollection();
 
 export { db, app };

@@ -220,7 +220,7 @@ const Candidate = () => {
                               setShowMessageModal(true);
                             }}
                           >
-                            Message
+                            Skicka meddelande
                           </button>
                           {user.cvUrl ? (
                             <a

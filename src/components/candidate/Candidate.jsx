@@ -69,10 +69,10 @@ const Candidate = () => {
       };
 
       await emailjs.send(
-        "service_hl7um1p", 
-        "template_tjpbtzh", 
+        "service_hl7um1p",
+        "template_tjpbtzh",
         templateParams,
-        "3ZnbOARiW9qmNJMeI" 
+        "3ZnbOARiW9qmNJMeI"
       );
 
       console.log("Email sent successfully!");
@@ -83,23 +83,23 @@ const Candidate = () => {
 
   const handleSendMessage = async () => {
     if (!selectedCandidate || !message.trim()) return;
-  
+
     const adminData = JSON.parse(localStorage.getItem("admin"));
     if (!adminData || !adminData.uid) {
       alert("Admin UID not found.");
       return;
     }
-  
+
     const adminUid = adminData.uid;
     const userUid = selectedCandidate.id;
     const userEmail = selectedCandidate.email; // Förväntar att användaren har en `email`-egenskap
-  
+
     try {
       const conversationId = adminUid < userUid ? `${adminUid}_${userUid}` : `${userUid}_${adminUid}`;
       const conversationRef = doc(db, "messages", conversationId);
-  
+
       const conversationSnap = await getDoc(conversationRef);
-  
+
       if (conversationSnap.exists()) {
         await updateDoc(conversationRef, {
           messages: [
@@ -125,10 +125,10 @@ const Candidate = () => {
           ],
         });
       }
-  
+
       // Skicka e-post till användaren
       await sendEmailNotification(userEmail);
-  
+
       setMessage("");
       setShowMessageModal(false);
       alert("Message sent successfully!");
@@ -137,7 +137,7 @@ const Candidate = () => {
       alert("Error sending message. Please try again.");
     }
   };
-  
+
 
   return (
     <section className="section homePage">
@@ -211,7 +211,8 @@ const Candidate = () => {
                             />
                           </a>
                         </div>
-                        <button
+                        <div className="row-container-candidate">
+                          <button
                             className="btn btn-secondary nav-link active"
                             onClick={() => {
                               console.log('Selected candidate:', user); // Debug log
@@ -221,6 +222,26 @@ const Candidate = () => {
                           >
                             Skicka meddelande
                           </button>
+                          {user.cvUrl ? (
+                            <a
+                              className="cv-link"
+                              href={user.cvUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <div className="img-container-cv">
+
+                                <img className="avatar-md img-thumbnail" src="https://cdn-icons-png.freepik.com/512/36/36049.png" alt="Icon Image"></img>
+                              </div>
+                            </a>
+                          ) : (
+                            <div className="p-tag-cv">
+
+                              <p className='w-100'>Ingen CV-länk</p>
+                            </div>
+                          )}
+
+                        </div>
                       </div>
                       <div className="col-lg-3">
                         <div className="candidate-list-content mt-3 mt-lg-0">
@@ -250,37 +271,26 @@ const Candidate = () => {
                         </div>
                       </div>
                       <div className='col-lg-4'>
-                              <div className='align-items-center'>
-                              <li className="list-inline-item d-flex justify-content-start">
-                          <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                            {user.skills?.map((skill, idx) => (
-                              <span
-                                key={idx}
-                                className="badge bg-soft-secondary fs-14 mt-1"
-                              >
-                                {skill}
-                              </span>
-                            ))}
-                          </div>
+                        <div className='align-items-center'>
+                          <li className="list-inline-item d-flex justify-content-start">
+                            <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                              {user.skills?.map((skill, idx) => (
+                                <span
+                                  key={idx}
+                                  className="badge bg-soft-secondary fs-14 mt-1"
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
                           </li>
-                              </div>
+                        </div>
                       </div>
                       <div className="col-lg-2">
                         <div className="align-items-center row">
-                          <li className="list-inline-item d-flex justify-content-end">
+                          <li className="list-inline-item d-flex justify-content-end ">
                             <i className="mdi mdi-wallet"></i>
-                            {user.cvUrl ? (
-                              <a
-                                className="cv-link"
-                                href={user.cvUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <img className="avatar-md img-thumbnail" src="https://cdn-icons-png.freepik.com/512/36/36049.png" alt="Icon Image"></img>
-                              </a>
-                            ) : (
-                              <p>Ingen CV-länk</p>
-                            )}
+
                           </li>
                         </div>
                       </div>

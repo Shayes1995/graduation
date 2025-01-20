@@ -17,7 +17,7 @@ section {
 
 .searchDiv button {
     margin-left: 1rem;
-    
+
 }
 
 .filler-job-form {
@@ -47,7 +47,7 @@ section {
     background-color: #047364;
 }
 
-.candidate-list-box{
+.candidate-list-box {
     border-radius: 0;
     border-bottom: 1px solid #e0e0e0;
     padding: 0;
@@ -88,7 +88,11 @@ section {
     height: 2.5rem;
 }
 
-.candidate-list{
+.row {
+    margin: 0;
+}
+
+.candidate-list {
     padding: 1rem;
 }
 
@@ -123,4 +127,42 @@ section {
     right: 10px;
     font-size: 24px;
     cursor: pointer;
+}
+
+
+.row-container-candidate {
+    display: flex;
+}
+
+.p-tag-cv{
+    margin-left: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+   
+}
+
+.w-100 {
+    margin: 0;
+    padding: 0;
+
+}
+
+.img-container-cv {
+    object-fit: cover;
+    margin-left: 1rem;
+    height: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+
+.img-container-cv img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: cover;
 }

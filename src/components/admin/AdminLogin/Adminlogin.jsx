@@ -79,7 +79,7 @@ const Adminlogin = () => {
                                 />
                             </div>
                             {error && <p style={{ color: 'red' }}>{error}</p>}
-                            <button type="submit" className="btn btn-primary">
+                            <button type="submit" className="btn btn-primary aLogin">
                                 Login
                             </button>
                         </form>

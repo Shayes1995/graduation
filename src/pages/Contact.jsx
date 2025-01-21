@@ -1,5 +1,7 @@
 import React from "react";
 import './Contact.css';
+import contactPicture from "./images/contact-picture.jpg";
+
 
 const Contact = () => {
   return (
@@ -23,7 +25,7 @@ const Contact = () => {
             <a href="mailto:awtalent@gmail.com">awtalent@gmail.com</a>
           </p>
 
-          <img src="contact-picture.jpg" alt="Bildbeskrivning" className="info-image" />
+          <img src={contactPicture} alt="Kontakta oss" className="info-image" />
         </div>
 
         {/* Kontaktformulär */}

@@ -3,6 +3,7 @@ import { db } from '../firebase/configfb';
 import { getAuth } from 'firebase/auth';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import './MyPage.css';
+import PDFUploader from '../components/candidate/PDFuploader';
 
 const MyPage = () => {
     const [firstName, setFirstName] = useState('');
@@ -92,7 +93,6 @@ const MyPage = () => {
     return (
         <div className="my-page-container">
             <h1>Välkommen {firstName || 'Användare'}</h1>
-            <h3>Min sida</h3>
             <p>Håll din profil uppdaterad för att ge andra en bättre förståelse för vem du är. Lägg till dina färdigheter och dela din CV-länk för att skapa ett starkt intryck.</p>
 
             <div className="profile-card">
@@ -200,13 +200,8 @@ const MyPage = () => {
                             </ul>
                         </div>
                         <div className="form-group">
-                            <label>CV-länk</label>
-                            <input
-                                type="text"
-                                value={cvUrl}
-                                onChange={(e) => setCvUrl(e.target.value)}
-                                placeholder="Ange länk till ditt CV"
-                            />
+                            <label>CV URL</label>
+                            <PDFUploader />
                         </div>
                         <div className="form-group">
                             <label>Profilbildslänk</label>

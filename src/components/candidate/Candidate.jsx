@@ -4,6 +4,7 @@ import {
   query,
   getDocs,
 } from "firebase/firestore";
+
 import { db } from "../../firebase/configfb";
 import emailjs from "@emailjs/browser";
 

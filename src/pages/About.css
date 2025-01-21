@@ -8,10 +8,7 @@ body {
     max-width: 1000px;
     margin: 40px auto;
     padding: 20px;
-    border: 1px solid #ccc;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     margin-bottom: 50px;
     display: flex;
     flex-direction: column; 
@@ -70,6 +67,14 @@ img.rounded-circle {
     height: 150px;
     margin-bottom: 10px;
 }
+
+.about-image {
+    max-width: 100%; 
+    height: auto;   
+    margin-top: 20px;
+    margin-bottom: 20px; 
+    border-radius: 8px; 
+  }
 
 
 

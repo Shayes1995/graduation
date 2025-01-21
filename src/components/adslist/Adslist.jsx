@@ -140,6 +140,8 @@ const Adslist = () => {
                 navigate('/login');
                 return;
             }
+
+            
     
             const applicationRef = doc(collection(db, 'applications'));
     
@@ -153,10 +155,6 @@ const Adslist = () => {
                 startDate: selectedAd.startDate,
                 typeOfAssignment: selectedAd.typeOfAssignment,
                 createdAt: new Date(),
-                userName: `${user.firstName} ${user.lastName}`,
-                userEmail: user.email,
-                userPhone: user.phone || "Okänt",
-                userCv: user.cvUrl || "Ingen CV-länk"
             };
     
             // 🔹 Steg 1: Lägg till i "applications"

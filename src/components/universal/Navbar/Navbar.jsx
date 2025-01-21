@@ -101,11 +101,11 @@ const Navbar = () => {
 
         <ul className="nav col-12 fs-6 col-md-auto mb-3 justify-content-center mb-md-0">
           <li><NavLink to="/" className="nav-link px-2 link-dark" activeClassName="active">Lediga jobb</NavLink></li>
-          <li><NavLink to="/academy" className="nav-link px-2 link-dark" activeClassName="active">Academy</NavLink></li>
+          <li><NavLink to="/ai" className="nav-link px-2 link-dark" activeClassName="active">Academy</NavLink></li>
           <li><NavLink to="/candidates" className="nav-link px-2 link-dark" activeClassName="active">För jobbsökande</NavLink></li>
           <li><NavLink to="/companies" className="nav-link px-2 link-dark" activeClassName="active">För företag</NavLink></li>
           <li><NavLink to="/about" className="nav-link px-2 link-dark" activeClassName="active">Om oss</NavLink></li>
-          {user && <li><NavLink to="/my-page" className="nav-link px-2 link-dark" activeClassName="active">Min sida</NavLink></li>}
+          {/* {user && <li><NavLink to="/my-page" className="nav-link px-2 link-dark" activeClassName="active">Min sida</NavLink></li>} */}
           <li><NavLink to="/contact" className="nav-link px-2 link-dark" activeClassName="active">Kontakt</NavLink></li>
         </ul>
 

@@ -18,6 +18,7 @@ import Inbox from './pages/Inbox'; // Import Inbox component
 
 import Contact from './pages/Contact';
 import About from './pages/About';
+import Ai from './pages/Ai';
 
 const App = () => {
   const router = createBrowserRouter([
@@ -39,6 +40,12 @@ const App = () => {
           path: 'about',
           element: (
             <About />
+          )
+        },
+        {
+          path: 'ai',
+          element: (
+            <Ai />
           )
         },
         {

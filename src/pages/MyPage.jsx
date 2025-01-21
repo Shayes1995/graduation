@@ -36,7 +36,7 @@ const MyPage = () => {
                     setBio(userData.bio || '');
                     setSkills(userData.skills || []);
                     setCvUrl(userData.cvUrl || '');
-                    setProfilePicUrl(userData.profilePicUrl || ''); // Add the profile picture URL from Firestore
+                    setProfilePicUrl(userData.profilePicUrl || '');
                 }
             }
         };
@@ -60,7 +60,7 @@ const MyPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!user) {
-            setMessage('User not authenticated');
+            setMessage('Användare ej autentiserad.');
             return;
         }
         try {
@@ -77,112 +77,112 @@ const MyPage = () => {
                 cvUrl,
                 profilePicUrl,
             });
-            setMessage('Profile updated successfully!');
-            setIsEditing(false); // Stop editing after save
+            setMessage('Profil uppdaterad!');
+            setIsEditing(false);
         } catch (error) {
-            console.error('Error updating profile:', error);
-            setMessage('Error updating profile: ' + error.message);
+            console.error('Fel vid uppdatering av profil:', error);
+            setMessage('Fel vid uppdatering av profil: ' + error.message);
         }
     };
 
     const handleEditClick = () => {
-        setIsEditing(true); // Activate edit mode
+        setIsEditing(true);
     };
 
     return (
         <div className="my-page-container">
-            <h1>Welcome {firstName || 'User'}</h1>
-            <h3>My Page</h3>
-            <p>Håll din profil uppdaterad för att förbättra din närvaro och ge andra en bättre förståelse för vem du är. Genom att uppdatera din bio, lägga till dina färdigheter och dela din CV-länk kan du skapa ett starkt intryck och visa upp dina bästa sidor.</p>
+            <h1>Välkommen {firstName || 'Användare'}</h1>
+            <h3>Min sida</h3>
+            <p>Håll din profil uppdaterad för att ge andra en bättre förståelse för vem du är. Lägg till dina färdigheter och dela din CV-länk för att skapa ett starkt intryck.</p>
 
             <div className="profile-card">
                 <div className="profile-card-header">
                     <img
                         src={profilePicUrl || 'https://bootdey.com/img/Content/avatar/avatar7.png'}
-                        alt="User Avatar"
+                        alt="Profilbild"
                         className="profile-img"
                     />
-                    <h4>{firstName} {lastName || 'User Name'}</h4>
+                    <h4>{firstName} {lastName || 'Namn'}</h4>
                 </div>
 
                 {isEditing ? (
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label>First name</label>
+                            <label>Förnamn</label>
                             <input
                                 type="text"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                placeholder="Enter your first name"
+                                placeholder="Ange ditt förnamn"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Last name</label>
+                            <label>Efternamn</label>
                             <input
                                 type="text"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
-                                placeholder="Enter your last name"
+                                placeholder="Ange ditt efternamn"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Email</label>
+                            <label>E-post</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
+                                placeholder="Ange din e-postadress"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Phone</label>
+                            <label>Telefonnummer</label>
                             <input
                                 type="text"
                                 value={phoneNumber}
                                 onChange={(e) => setPhone(e.target.value)}
-                                placeholder="Enter your phone number"
+                                placeholder="Ange ditt telefonnummer"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Address</label>
+                            <label>Adress</label>
                             <input
                                 type="text"
                                 value={adress}
                                 onChange={(e) => setAddress(e.target.value)}
-                                placeholder="Enter your address"
+                                placeholder="Ange din adress"
                             />
                         </div>
                         <div className="form-group">
-                            <label>City</label>
+                            <label>Stad</label>
                             <input
                                 type="text"
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
-                                placeholder="Enter your city"
+                                placeholder="Ange din stad"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Bio</label>
+                            <label>Beskrivning</label>
                             <textarea
                                 value={bio}
                                 onChange={(e) => setBio(e.target.value)}
-                                placeholder="Write a short bio about yourself..."
+                                placeholder="Skriv en kort beskrivning om dig själv..."
                             />
                         </div>
                         <div className="form-group">
-                            <label>Skills</label>
+                            <label>Färdigheter</label>
                             <div className="skills-input-container">
                                 <input
                                     type="text"
                                     value={skillInput}
                                     onChange={(e) => setSkillInput(e.target.value)}
-                                    placeholder="Enter a skill"
+                                    placeholder="Lägg till en färdighet"
                                 />
                                 <button
                                     onClick={handleSkillAdd}
                                     className="btn btn-secondary"
                                 >
-                                    Add Skill
+                                    Lägg till
                                 </button>
                             </div>
                             <ul className="skills-list">
@@ -193,46 +193,46 @@ const MyPage = () => {
                                             type="button"
                                             onClick={() => handleSkillRemove(index)}
                                         >
-                                            Remove
+                                            Ta bort
                                         </button>
                                     </li>
                                 ))}
                             </ul>
                         </div>
                         <div className="form-group">
-                            <label>CV URL</label>
+                            <label>CV-länk</label>
                             <input
                                 type="text"
                                 value={cvUrl}
                                 onChange={(e) => setCvUrl(e.target.value)}
-                                placeholder="Enter your CV URL"
+                                placeholder="Ange länk till ditt CV"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Profile Picture URL</label>
+                            <label>Profilbildslänk</label>
                             <input
                                 type="text"
                                 value={profilePicUrl}
                                 onChange={(e) => setProfilePicUrl(e.target.value)}
-                                placeholder="Enter your profile picture URL"
+                                placeholder="Ange länk till din profilbild"
                             />
                         </div>
                         <button type="submit" className="btn btn-primary mLogin">
-                            Save
+                            Spara
                         </button>
                         {message && <p>{message}</p>}
                     </form>
                 ) : (
                     <div className="profile-display">
-                        <p><strong>First name:</strong> {firstName}</p>
-                        <p><strong>Last name:</strong> {lastName}</p>
-                        <p><strong>Email:</strong> {email}</p>
-                        <p><strong>Phone:</strong> {phoneNumber}</p>
-                        <p><strong>Address:</strong> {adress}</p>
-                        <p><strong>City:</strong> {city}</p>
-                        <p><strong>Bio:</strong> {bio || 'No bio provided'}</p>
-                        <p><strong>CV URL:</strong> {cvUrl ? <a href={cvUrl} target="_blank" rel="noopener noreferrer">{cvUrl}</a> : 'No CV URL provided'}</p>
-                        <p><strong>Skills:</strong></p>
+                        <p><strong>Förnamn:</strong> {firstName}</p>
+                        <p><strong>Efternamn:</strong> {lastName}</p>
+                        <p><strong>E-post:</strong> {email}</p>
+                        <p><strong>Telefonnummer:</strong> {phoneNumber}</p>
+                        <p><strong>Adress:</strong> {adress}</p>
+                        <p><strong>Stad:</strong> {city}</p>
+                        <p><strong>Beskrivning:</strong> {bio || 'Ingen beskrivning angiven'}</p>
+                        <p><strong>CV-länk:</strong> {cvUrl ? <a href={cvUrl} target="_blank" rel="noopener noreferrer">{cvUrl}</a> : 'Ingen CV-länk angiven'}</p>
+                        <p><strong>Färdigheter:</strong></p>
                         <div className="d-flex flex-wrap gap-2">
                             {skills.length > 0
                                 ? skills.map((skill, idx) => (
@@ -240,12 +240,10 @@ const MyPage = () => {
                                         {skill}
                                     </span>
                                 ))
-                                : 'No skills added'}
+                                : 'Inga färdigheter angivna'}
                         </div>
-                        {/* <p><strong>Skills:</strong> {skills.length > 0 ? skills.join(', ') : 'No skills added'}</p> */}
-                        {/* <p><strong>Profile Picture URL:</strong> {profilePicUrl ? <a href={profilePicUrl} target="_blank" rel="noopener noreferrer">{profilePicUrl}</a> : 'No profile picture URL provided'}</p> */}
                         <button onClick={handleEditClick} className="btn btn-secondary">
-                            Edit Profile
+                            Redigera profil
                         </button>
                     </div>
                 )}

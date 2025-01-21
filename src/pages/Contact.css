@@ -78,6 +78,13 @@ body {
     border-color: #004a99;
 }
 
+.info-image {
+    max-width: 100%; 
+    height: auto;   
+    display: block;  
+    margin-top: 20px; 
+    border-radius: 8px; 
+  }
   
 
 

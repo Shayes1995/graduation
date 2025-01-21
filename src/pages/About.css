@@ -71,6 +71,14 @@ img.rounded-circle {
     margin-bottom: 10px;
 }
 
+.about-image {
+    max-width: 100%; 
+    height: auto;   
+    margin-top: 20px;
+    margin-bottom: 20px; 
+    border-radius: 8px; 
+  }
+
 
 
 

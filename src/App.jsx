@@ -19,7 +19,9 @@ import Inbox from './pages/Inbox'; // Import Inbox component
 import Contact from './pages/Contact';
 import About from './pages/About';
 
+
 const App = () => {
+
   const router = createBrowserRouter([
     {
       path: '/',

@@ -3,6 +3,7 @@ import { db } from '../firebase/configfb';
 import { getAuth } from 'firebase/auth';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import './MyPage.css';
+import PDFUploader from '../components/candidate/PDFuploader';
 
 const MyPage = () => {
     const [firstName, setFirstName] = useState('');
@@ -201,12 +202,7 @@ const MyPage = () => {
                         </div>
                         <div className="form-group">
                             <label>CV URL</label>
-                            <input
-                                type="text"
-                                value={cvUrl}
-                                onChange={(e) => setCvUrl(e.target.value)}
-                                placeholder="Enter your CV URL"
-                            />
+                            <PDFUploader />
                         </div>
                         <div className="form-group">
                             <label>Profile Picture URL</label>

@@ -118,13 +118,12 @@ const Navbar = () => {
               {dropdownVisible && (
                 <div className="dropdown-menu dropdown-menu-right show">
                   {user && <button onClick={toMyPage} className="dropdown-item">Mina sidor</button>}
-                  {user && <button onClick={toMyPage} className="dropdown-item">MyPage</button>}
-                  {user && <NavLink to="/inbox" className="dropdown-item">Inbox</NavLink>}
+                  {user && <NavLink to="/inbox" className="dropdown-item">Konversationer</NavLink>}
                   {admin && <button onClick={adminAddJob} className="dropdown-item">Skapa jobbannons</button>}
                   {admin && <button onClick={adminSearch} className="dropdown-item">Sök användare</button>}
                   {admin && <button onClick={adminApplications} className="dropdown-item">Rekrytering</button>} 
-                  {admin && <button onClick={toInbox} className="dropdown-item">Inbox</button>}
-                  <button onClick={handleLogout} className="dropdown-item">Logout</button>
+                  {admin && <button onClick={toInbox} className="dropdown-item">Meddelanden</button>}
+                  <button onClick={handleLogout} className="dropdown-item">Logga ut</button>
                 </div>
               )}
             </div>

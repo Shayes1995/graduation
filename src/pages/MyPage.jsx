@@ -92,7 +92,7 @@ const MyPage = () => {
     return (
         <div className="my-page-container">
             <h1>Välkommen {firstName || 'Användare'}</h1>
-            <h3>Min sida</h3>
+            
             <p>Håll din profil uppdaterad för att ge andra en bättre förståelse för vem du är. Lägg till dina färdigheter och dela din CV-länk för att skapa ett starkt intryck.</p>
 
             <div className="profile-card">

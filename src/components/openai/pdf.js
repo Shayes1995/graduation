@@ -1,106 +1,140 @@
-/* import OpenAI from 'openai';
+import OpenAI from 'openai';
 import fs from 'fs';
-import path from 'path';  // For resolving relative file paths
-
+import path from 'path';
+ 
 const openai = new OpenAI({
-  apiKey: '', // Replace with your actual API key
+  apiKey: '',
 });
-
-// Main function to create assistant and upload files
+ 
 async function main() {
   try {
-    // Step 1: Create the assistant
     const assistant = await openai.beta.assistants.create({
-      name: "Financial Analyst Assistant",
-      instructions: "You are an expert financial analyst. Use your knowledge base to answer questions about audited financial statements.",
-      model: "gpt-4o-mini", // Use a valid model like "gpt-3.5-turbo"
-      tools: [{ type: "file_search" }],
+      name: 'Financial Analyst Assistant',
+      instructions: 'You are an expert financial analyst. Use your knowledge base to answer questions about audited financial statements.',
+      model: 'gpt-3.5-turbo',
+      tools: [{ type: 'file_search' }],
     });
-
-    console.log("Assistant created successfully:", assistant.id);
-
-    // File paths - Ensure these are correct paths to your files
-    const filePaths = ["src/components/openai/kevin.pdf", "src/components/openai/kevin.pdf"]; // Duplicate the file path
-    
+ 
+    console.log('Assistant created successfully:', assistant.id);
+ 
+    // File paths
+    const filePaths = ['src/components/openai/kevin.pdf', 'src/components/openai/kevin.pdf'];
+ 
     // Resolving file paths
     const fileStreams = filePaths.map((filePath) => {
-      const absolutePath = path.resolve(filePath); // Resolving the relative path
-      console.log("Resolved file path:", absolutePath); // Log the resolved path for debugging
-
-      // Check if the file exists before creating a stream
+      const absolutePath = path.resolve(filePath);
+      console.log('Resolved file path:', absolutePath);
+ 
       if (!fs.existsSync(absolutePath)) {
-        console.error("File does not exist:", absolutePath); // If file doesn't exist, log an error
-        return null; // Return null to indicate the file wasn't found
+        console.error('File does not exist:', absolutePath);
+        return null;
       }
-
+ 
       return fs.createReadStream(absolutePath);
-    }).filter(stream => stream !== null); // Filter out any null values in case a file doesn't exist
-
+    }).filter((stream) => stream !== null);
+ 
     if (fileStreams.length === 0) {
-      console.error("No valid files to upload. Exiting process.");
+      console.error('No valid files to upload. Exiting process.');
       return;
     }
-
-    // Step 2: Upload files to OpenAI API
+ 
     const uploadedFiles = [];
     for (const fileStream of fileStreams) {
       const file = await openai.files.create({
         file: fileStream,
-        purpose: 'assistants', // Purpose for the assistant
+        purpose: 'assistants',
       });
-      uploadedFiles.push(file.id); // Collect file ids for later use
+      uploadedFiles.push(file.id);
       console.log(`Uploaded file ID: ${file.id}`);
     }
-
-    // Step 3: Create a vector store for the files
+ 
     const vectorStore = await openai.beta.vectorStores.create({
-      name: "Financial Statement",
-      file_ids: uploadedFiles, // Pass the file IDs here
+      name: 'Financial Statement',
+      file_ids: uploadedFiles,
     });
-
-    console.log("Vector store created successfully:", vectorStore.id);
-
-    // Step 4: Update the assistant with the vector store
+ 
+    console.log('Vector store created successfully:', vectorStore.id);
+ 
     await openai.beta.assistants.update(assistant.id, {
       tool_resources: {
         file_search: { vector_store_ids: [vectorStore.id] },
       },
     });
-
-    console.log("Assistant setup complete!");
-
-    // Step 5: Create a thread and run it with a message
+ 
+    console.log('Assistant setup complete!');
+ 
+    const questions = [
+      { question: 'What is Kevin\'s financial status according to the latest report?' },
+      { question: 'What are Kevin\'s key financial metrics for Q1 2024?' },
+    ];
+ 
+    for (let i = 0; i < questions.length; i++) {
+      await fetchAnswer(
+        uploadedFiles[0],
+        vectorStore.id,
+        questions[i].question,
+        assistant
+      );
+    }
+ 
+    console.log('All questions processed.');
+ 
+  } catch (error) {
+    console.error('Error during assistant setup or question processing:', error);
+  }
+}
+ 
+async function fetchAnswer(fileId, vectorStoreId, question, assistant) {
+  try {
     const run = await openai.beta.threads.createAndRun({
-      assistant_id: assistant.id, // Using the assistant's ID
-      tools: [{ type: "file_search" }],
+      assistant_id: assistant.id,
       thread: {
         messages: [
           {
-            role: "user",
-            content: "What is Kevin's financial status according to the latest report?", // The user query
+            role: 'user',
+            content: question,
+            attachments: [
+              { file_id: fileId, tools: [{ type: 'file_search' }] },
+            ],
           },
         ],
         tool_resources: {
-          "file_search": {
-            "vector_store_ids": [vectorStore.id]
+          file_search: {
+            vector_store_ids: [vectorStoreId],
+          },
+        },
+      },
+      stream: true,
+    });
+ 
+    for await (const message of run) {
+      if (message.event === 'thread.run.failed') {
+        console.error('Thread failed to run:', message);
+        return;
+      }
+ 
+      if (message.event === 'thread.run.completed') {
+        const messages = await openai.beta.threads.messages.list(
+          message.data.thread_id,
+          {
+            run_id: message.data.id,
+          }
+        );
+       
+        for (const msg of messages.data) {
+          const content = msg.content;
+ 
+          if (Array.isArray(content) && content.length > 0) {
+            console.log('Received answer:', content[0]);
+          } else {
+            console.log('No content available in the message.');
           }
         }
-      },
-    });
-
-    console.log("Thread created and run:", run);
-
-    // Verify the thread_id is correct and it's a string
-    let threadId = run.thread_id;
-    console.log(`Thread ID: ${threadId}`); // Log the thread_id to ensure it's a string
-    threadId = String(threadId); // Ensure the thread_id is a string
-
-    // The response retrieval code has been removed
-
+      }
+    }
   } catch (error) {
-    console.error("Error during assistant setup or thread run:", error);
+    console.error('Error fetching answer for question:', question, error);
   }
 }
-
+ 
 main();
- */

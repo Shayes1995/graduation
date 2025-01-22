@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, query, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase/configfb";
 import { supabase } from "../../supabase/Supabase";
 import emailjs from "@emailjs/browser";
@@ -13,6 +13,7 @@ const Candidate = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [message, setMessage] = useState("");
   const [showMessageModal, setShowMessageModal] = useState(false);
+  
  
   // Debounce function for search input
   const debounce = (func, delay) => {
@@ -104,6 +105,27 @@ const Candidate = () => {
  
   const handleRemoveKeyword = (keywordToRemove) => {
     setKeywords(keywords.filter((k) => k !== keywordToRemove));
+  };
+
+  const handleSendMessage = async () => {
+    if (!selectedCandidate || !message.trim()) return;
+ 
+    console.log('Selected candidate:', selectedCandidate); // Debug log
+ 
+    try {
+      await addDoc(collection(db, 'messages'), {
+        senderId: 'admin-id', // Replace with actual admin ID
+        receiverId: selectedCandidate.id,
+        message,
+        timestamp: serverTimestamp(),
+      });
+      setMessage("");
+      setShowMessageModal(false);
+      alert('Message sent successfully!');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Error sending message. Please try again.');
+    }
   };
  
   return (
@@ -290,12 +312,16 @@ const Candidate = () => {
             <button
               onClick={() => {
                 // Add email sending logic here
-                emailjs.send("your_service_id", "your_template_id", {
+                emailjs.send("service_hl7um1p", "template_tjpbtzh", {
                   to_name: selectedCandidate?.firstName,
                   message,
-                })
+                },
+                "3ZnbOARiW9qmNJMeI"
+                
+              )
                 .then((response) => {
                   console.log("Message sent successfully", response);
+                  handleSendMessage();
                 })
                 .catch((error) => {
                   console.error("Error sending message", error);

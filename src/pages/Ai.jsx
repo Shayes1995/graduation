@@ -6,9 +6,9 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-const assistantId = 'asst_x2BJxIK5XMXDTWnzMTxc9yYa';
-const fileId = 'file-589EiK1EkuQUg2EqKzbopg';
-const vectorStoreId = 'vs_FIxs3Eaih22sO1PTGdc94dTd';
+const assistantId = 'asst_FmJSWXe6z9lLsJdPVbCKtH1a';
+const fileId = 'file-JfBdqCXepeQXAnT1PCXpcc';
+const vectorStoreId = 'vs_eTMj7U2Oxeico30vqTG1NBIo';
 
 const Ai = () => {
   const [message, setMessage] = useState('');

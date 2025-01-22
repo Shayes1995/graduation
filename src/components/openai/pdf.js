@@ -10,7 +10,7 @@ async function main() {
   try {
     const assistant = await openai.beta.assistants.create({
       name: 'Financial Analyst Assistant',
-      instructions: 'You are an expert financial analyst. Use your knowledge base to answer questions about audited financial statements.',
+      instructions: 'You are an expert recruiter. Use your knowledge base to answer questions about recruitment.',
       model: 'gpt-3.5-turbo',
       tools: [{ type: 'file_search' }],
     });
@@ -18,7 +18,7 @@ async function main() {
     console.log('Assistant created successfully:', assistant.id);
  
     // File paths
-    const filePaths = ['src/components/openai/kevin.pdf', 'src/components/openai/kevin.pdf'];
+    const filePaths = ['src/components/openai/KevinDavid.pdf', 'src/components/openai/ShayanSadr.pdf', 'src/components/openai/PatrikSkantz.pdf', 'src/components/openai/MikaelLarsson.pdf', 'src/components/openai/LarsAndersson.pdf', 'src/components/openai/JohanNilsson.pdf', 'src/components/openai/JohannaSvensson.pdf', 'src/components/openai/EvelinaEnqvist.pdf', 'src/components/openai/EllenOlsson.pdf'];
  
     // Resolving file paths
     const fileStreams = filePaths.map((filePath) => {
@@ -64,8 +64,8 @@ async function main() {
     console.log('Assistant setup complete!');
  
     const questions = [
-      { question: 'What is Kevin\'s financial status according to the latest report?' },
-      { question: 'What are Kevin\'s key financial metrics for Q1 2024?' },
+      { question: 'Who is Kevin' },
+      { question: 'Who is Johan' },
     ];
  
     for (let i = 0; i < questions.length; i++) {

@@ -4,7 +4,7 @@ import { getAuth } from 'firebase/auth';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import './MyPage.css';
 import PDFUploader from '../components/candidate/PDFuploader';
-
+import { supabase } from '../supabase/Supabase';
 const MyPage = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -19,6 +19,8 @@ const MyPage = () => {
     const [profilePicUrl, setProfilePicUrl] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [message, setMessage] = useState('');
+    const [cvExists, setCvExists] = useState(false); // ✅ Kontrollerar om CV finns
+
     const auth = getAuth();
     const user = auth.currentUser;
 
@@ -38,6 +40,16 @@ const MyPage = () => {
                     setSkills(userData.skills || []);
                     setCvUrl(userData.cvUrl || '');
                     setProfilePicUrl(userData.profilePicUrl || '');
+                }
+
+                const filePath = `${user.uid}-cv.pdf`;
+                const { data, error } = await supabase.storage.from("pdfs").download(filePath);
+
+                if (!error && data) {
+                    setCvExists(true);
+                    setCvUrl(filePath);
+                } else {
+                    setCvExists(false);
                 }
             }
         };
@@ -78,6 +90,8 @@ const MyPage = () => {
                 cvUrl,
                 profilePicUrl,
             });
+
+
             setMessage('Profil uppdaterad!');
             setIsEditing(false);
         } catch (error) {

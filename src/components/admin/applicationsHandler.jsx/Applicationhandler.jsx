@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/configfb';
+import { supabase } from '../../../supabase/Supabase';
 import './Applicationhandler.css';
 
 const ApplicationHandler = () => {
@@ -9,8 +10,10 @@ const ApplicationHandler = () => {
     const [showAllApplications, setShowAllApplications] = useState(false);
     const [filteredApplications, setFilteredApplications] = useState([]);
     const [selectedApplication, setSelectedApplication] = useState(null);
-    const [applicantNames, setApplicantNames] = useState([]);
-
+    const [applicantNames, setApplicantNames] = useState({});
+    const [cvData, setCvData] = useState({}); // 🔥 Lagrat CV-text och URL för varje användare
+    const [searchTerm, setSearchTerm] = useState(""); // 🔍 Sökfält
+    const [cvUrls, setCvUrls] = useState({});
     const adminData = JSON.parse(localStorage.getItem('admin'));
     const loggedInAdminId = adminData?.uid || '';
 
@@ -50,15 +53,16 @@ const ApplicationHandler = () => {
 
         setAdminNames(newAdminNames);
     };
+
     const fetchApplicantDetails = async (applicantIds) => {
         if (!Array.isArray(applicantIds)) {
             console.error("Fel: applicantIds är inte en array", applicantIds);
             return;
         }
 
-        const newApplicantDetails = { ...applicantNames }; 
+        const newApplicantDetails = { ...applicantNames };
+        const newCvData = { ...cvData };
 
-       
         const missingIds = applicantIds.filter(userId => userId && !newApplicantDetails[userId]);
         if (missingIds.length === 0) return;
 
@@ -68,33 +72,47 @@ const ApplicationHandler = () => {
                     const userRef = doc(db, 'users', uid);
                     const userSnap = await getDoc(userRef);
 
+                    let userData = {
+                        id: uid,
+                        firstName: "Okänd",
+                        lastName: "",
+                        email: "Ej tillgänglig",
+                        phoneNumber: "Ej tillgänglig",
+                        city: "Ej tillgänglig",
+                        skills: [],
+                        profilePicUrl: "",
+                    };
+
                     if (userSnap.exists()) {
-                        const userData = userSnap.data();
-                        return {
+                        userData = {
                             id: uid,
-                            ...userData, // hämta  användarinformation
-                        };
-                    } else {
-                        return {
-                            id: uid,
-                            firstName: "Okänd",
-                            lastName: "",
-                            email: "Ej tillgänglig",
-                            phoneNumber: "Ej tillgänglig",
-                            city: "Ej tillgänglig",
-                            skills: [],
-                            profilePicUrl: "",
+                            ...userSnap.data(),
                         };
                     }
+
+                    // ✅ Hämta CV-text och PDF-URL från `user_pdfs`
+                    const { data, error } = await supabase
+                        .from("user_pdfs")
+                        .select("pdf_url, cv_text")
+                        .eq("user_id", uid)
+                        .single();
+
+                    if (!error && data) {
+                        newCvData[uid] = { pdfUrl: data.pdf_url, cvText: data.cv_text };
+                    } else {
+                        newCvData[uid] = { pdfUrl: null, cvText: "" };
+                    }
+
+                    return userData;
                 })
             );
 
-            // uoodatera state med hämtade detaljer
             fetchedDetails.forEach(user => {
                 newApplicantDetails[user.id] = user;
             });
 
             setApplicantNames(newApplicantDetails);
+            setCvData(newCvData);
         } catch (error) {
             console.error('Fel vid hämtning av användardata:', error);
         }
@@ -102,22 +120,15 @@ const ApplicationHandler = () => {
 
     const openModal = (application) => {
         setSelectedApplication(application);
-
-        console.log("Applicants-data:", application.applicants);
-
-          // hämta alla sökandes ID:n
         const applicantIds = application.applicants?.map(applicant => applicant.userId).filter(Boolean) || [];
-
         fetchApplicantDetails(applicantIds);
     };
 
-
-
-
-
     const closeModal = () => {
         setSelectedApplication(null);
-        setApplicantNames([]);
+        setApplicantNames({});
+        setCvData({});
+        setSearchTerm("");
     };
 
     useEffect(() => {
@@ -168,46 +179,75 @@ const ApplicationHandler = () => {
             {selectedApplication && (
                 <div className="modal-overlay">
                     <div className="modal-content">
+                        <span className='close' onClick={closeModal}>X</span>
                         <div className="top-header">
                             <h2>{selectedApplication.title}</h2>
-                            <input type="text" />
-                            <button>Filtrera</button>
+                            <div className="input-row">
+                                <input
+                                    type="text"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+                                    placeholder="Sök i CV-text..."
+                                />
+                            </div>
                         </div>
-                        <h3>Sökande:</h3>
-
+                        <p>Antal sökande: <strong>{selectedApplication.applicants.length}</strong></p>
                         <ul>
-                            {selectedApplication && (
-                                <div className="modal-overlay">
-                                    <div className="modal-content">
-                                        <div className="top-header">
-                                            <h2>{selectedApplication.title}</h2>
-                                            <input type="text" />
-                                            <button>Filtrera</button>
-                                        </div>
-
-                                        {selectedApplication.applicants.map((applicant, index) => (
-                                            <div key={index} className="applicant-cards">
-                                                <div className="img-container-profile">
-                                                    <img src={applicantNames[applicant.userId]?.profilePicUrl} alt="Profilbild" />
-                                                </div>
-                                                <div className="user-info">
-                                                    <p><strong>Namn:</strong> {applicantNames[applicant.userId]?.firstName} {applicantNames[applicant.userId]?.lastName}</p>
-                                                    <p><strong>Email:</strong> {applicantNames[applicant.userId]?.email}</p>
-                                                    <p><strong>Telefon:</strong> {applicantNames[applicant.userId]?.phoneNumber}</p>
-                                                    <p><strong>Stad:</strong> {applicantNames[applicant.userId]?.city}</p>
-                                                </div>
-                                                <div className="">
-                                                    <p><strong>Skills:</strong> {applicantNames[applicant.userId]?.skills?.join(", ") || "Inga"}</p>
-                                                </div>
+                            {selectedApplication.applicants
+                                .filter(applicant => {
+                                    const userCvText = cvData[applicant.userId]?.cvText?.toLowerCase() || "";
+                                    return userCvText.includes(searchTerm);
+                                })
+                                .map((applicant, index) => {
+                                    const pdfUrl = cvData[applicant.userId]?.pdfUrl;
+                                    const userData = applicantNames[applicant.userId] || {};
+                                    const cvFilePath = cvUrls[applicant.userId];
+                                    return (
+                                        <div key={index} className="applicant-cards">
+                                            <div className="user-info">
+                                                <p><strong>Namn:</strong> {userData.firstName} {userData.lastName}</p>
+                                                <p><strong>E-post:</strong> {userData.email}</p>
                                             </div>
-                                        ))}
+                                            {pdfUrl && (
+                                                <div className="button-box">
+                                                    <button
+                                                        onClick={async () => {
+                                                            try {
+                                                                const { data, error } = await supabase.storage
+                                                                    .from("pdfs")
+                                                                    .download(pdfUrl.replace("https://your-storage-url.com/storage/v1/object/public/pdfs/", ""));
 
-                                        <button className="close-button" onClick={closeModal}>Stäng</button>
-                                    </div>
-                                </div>
-                            )}
+                                                                if (error) {
+                                                                    console.error("❌ Kunde inte ladda ner PDF:", error);
+                                                                    return;
+                                                                }
 
+                                                                const url = URL.createObjectURL(data);
+                                                                const a = document.createElement("a");
+                                                                a.href = url;
+                                                                a.download = `${userData.firstName || "CV"}-cv.pdf`;
+                                                                document.body.appendChild(a);
+                                                                a.click();
+                                                                document.body.removeChild(a);
+                                                                URL.revokeObjectURL(url);
+                                                            } catch (err) {
+                                                                console.error("❌ Fel vid nedladdning av PDF:", err);
+                                                            }
+                                                        }}
+                                                        className="btn-download-cv"
+                                                    >
+                                                        <img
+                                                            className="avatar-md img-thumbnail"
+                                                            src="https://cdn-icons-png.freepik.com/512/36/36049.png"
+                                                            alt="Download Icon"
+                                                        />
+                                                    </button>
+                                                </div>
+                                            )}
 
+                                        </div>
+                                    );
+                                })}
                         </ul>
                         <button className="close-button" onClick={closeModal}>Stäng</button>
                     </div>

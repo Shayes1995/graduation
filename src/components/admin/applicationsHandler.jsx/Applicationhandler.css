@@ -26,5 +26,88 @@
 .applicant-cards {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     margin-top: .5rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem;
+}
+
+.img-container-profile {
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    justify-self: center;
+    align-items: center;
+}
+
+.btn-download-cv {
+    background: none;
+
+    height: 100%;
+}
+
+.cv-download {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.button-box {
+    width: 5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.btn-download-cv img {
+    height: 4rem;
+    width: 4rem;
+}
+
+.img-container-profile {
+    width: 10rem;
+}
+
+.user-info-group {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.user-info {
+    width: 100%;
+}
+
+.input-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    height: 2.5rem;
+
+}
+
+.input-row input {
+    width: 80%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.input-row button {
+    font-size: 14px;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 8rem;
+}
+
+.close {
+    cursor: pointer;
 }

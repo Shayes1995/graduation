@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabase/Supabase";
+import pdfToText from "react-pdftotext";
 
 const PDFUploader = () => {
     const [file, setFile] = useState(null);
@@ -8,7 +9,7 @@ const PDFUploader = () => {
     const localStorageData = JSON.parse(localStorage.getItem("user"));
     const userUid = localStorageData?.uid;
 
-  
+    // 🔍 Kolla om PDF finns i Supabase
     const checkIfPdfExists = async () => {
         try {
             if (!userUid) {
@@ -19,7 +20,6 @@ const PDFUploader = () => {
 
             const filePath = `${userUid}-cv.pdf`;
 
-            // kolla i supabase storage om filen existerar
             const { data: fileData, error } = await supabase.storage
                 .from("pdfs")
                 .download(filePath);
@@ -35,7 +35,7 @@ const PDFUploader = () => {
             }
 
             if (fileData) {
-                setCvExists(true); // Fil existerar
+                setCvExists(true);
             }
         } catch (error) {
             console.error("❌ Fel vid kontroll av PDF:", error);
@@ -44,7 +44,7 @@ const PDFUploader = () => {
         }
     };
 
-    // Hämta och ladda ner PDF
+    // 📥 Hämta och ladda ner PDF
     const fetchAndDownloadPdf = async () => {
         try {
             if (!userUid) {
@@ -54,7 +54,6 @@ const PDFUploader = () => {
 
             const filePath = `${userUid}-cv.pdf`;
 
-            // Hämta PDF från Supabase Storage
             const { data: fileData, error } = await supabase.storage
                 .from("pdfs")
                 .download(filePath);
@@ -65,7 +64,6 @@ const PDFUploader = () => {
             }
 
             if (fileData) {
-                // Skapa en nedladdningsbar länk
                 const url = window.URL.createObjectURL(fileData);
                 const link = document.createElement("a");
                 link.href = url;
@@ -80,13 +78,25 @@ const PDFUploader = () => {
     };
 
     useEffect(() => {
-        checkIfPdfExists(); 
+        checkIfPdfExists();
     }, []);
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
 
+    // 📝 Extrahera text från PDF med react-pdftotext
+    const extractTextFromPdf = async (file) => {
+        try {
+            const text = await pdfToText(file);
+            return text;
+        } catch (error) {
+            console.error("❌ Fel vid text-extraktion från PDF:", error);
+            return "";
+        }
+    };
+
+    // ⬆️ Ladda upp PDF och text till Supabase
     const handleUpload = async () => {
         if (!file) {
             alert("Välj en PDF-fil först!");
@@ -101,28 +111,37 @@ const PDFUploader = () => {
         try {
             const filePath = `${userUid}-cv.pdf`;
 
-  
+            // 🟢 Extrahera text från PDF
+            const extractedText = await extractTextFromPdf(file);
+            console.log("📝 Extraherad text:", extractedText);
+
+            // 🟢 Ladda upp PDF till Supabase Storage
             const { data, error } = await supabase.storage
                 .from("pdfs")
                 .upload(filePath, file, { upsert: true });
 
             if (error) throw error;
-
             console.log("✅ Fil uppladdad:", data);
-            alert("Filen har laddats upp!");
-            setCvExists(true); 
+
+            // 🟢 Skapa en offentlig URL för PDF
+            const { data: publicUrlData } = supabase.storage
+                .from("pdfs")
+                .getPublicUrl(filePath);
+            const pdfUrl = publicUrlData.publicUrl;
+
+            // 🟢 Lagra PDF-URL och extraherad text i `user_pdfs`
+            const { error: pdfDbError } = await supabase
+                .from("user_pdfs")
+                .upsert([{ user_id: userUid, pdf_url: pdfUrl, cv_text: extractedText }]);
+
+            if (pdfDbError) throw pdfDbError;
+
+            alert("Filen har laddats upp och texten är sparad!");
+            setCvExists(true);
         } catch (error) {
             console.error("❌ Fel vid uppladdning av PDF:", error);
         }
     };
-
-    if (isLoading) {
-        return <p>Laddar...</p>;
-    }
-
-    if (!userUid) {
-        return <p>Ingen användare inloggad. Logga in för att ladda upp ditt CV.</p>;
-    }
 
     return (
         <div>

@@ -27,4 +27,34 @@
     display: flex;
     flex-direction: row;
     margin-top: .5rem;
+    width: 100%;
+}
+
+.btn-download-cv {
+    background: none;
+}
+
+.btn-download-cv img {
+    width: 3rem;
+    height: 3rem;
+}
+
+.user-info-own {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+}
+
+
+.info-box-user {
+    width: 12rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    height: 100%;
+    border: 1px solid black;
 }

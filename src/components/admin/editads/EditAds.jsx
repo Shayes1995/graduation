@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/configfb';
 import './EditAds.css';
 
@@ -54,6 +54,17 @@ const EditAds = () => {
         setShowModal(true);
     };
 
+    const handleDelete = async (adId) => {
+        if (!window.confirm("Är du säker på att du vill ta bort denna annons?")) return;
+
+        try {
+            await deleteDoc(doc(db, 'ads', adId));
+            setAds(prevAds => prevAds.filter(ad => ad.id !== adId));
+            alert("Annons borttagen!");
+        } catch (error) {
+            console.error("Fel vid borttagning av annons:", error);
+        }
+    };
 
     const handleSave = async (e) => {
         e.preventDefault(); 
@@ -107,6 +118,7 @@ const EditAds = () => {
                             <p>Kategori: {ad.category}</p>
                             <p>Startdatum: {ad.startDate}</p>
                             <button className="edit-btn" onClick={() => openEditModal(ad)}>Redigera</button>
+                            <button className="delete-btn" onClick={() => handleDelete(ad.id)}>Ta bort</button>
                         </div>
                     ))}
                 </div>

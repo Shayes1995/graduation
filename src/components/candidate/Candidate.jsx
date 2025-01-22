@@ -3,18 +3,12 @@ import {
   collection,
   query,
   getDocs,
-  addDoc,
-  doc,
-  getDoc,
-  setDoc,
-  serverTimestamp,
 } from "firebase/firestore";
 
 import { db } from "../../firebase/configfb";
 import emailjs from "@emailjs/browser";
 
 import "./Candidate.css";
-import Admin from "../../pages/Admin";
 
 const Candidate = () => {
   const [keyword, setKeyword] = useState("");
@@ -24,20 +18,29 @@ const Candidate = () => {
   const [message, setMessage] = useState("");
   const [showMessageModal, setShowMessageModal] = useState(false);
 
-  const handleAddKeyword = (e) => {
-    e.preventDefault();
-    if (keyword.trim() && !keywords.includes(keyword.trim().toLowerCase())) {
-      setKeywords([...keywords, keyword.trim().toLowerCase()]);
-      setKeyword("");
-    }
+  const debounce = (func, delay) => {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), delay);
+    };
   };
 
-  const handleRemoveKeyword = (keywordToRemove) => {
-    setKeywords(keywords.filter((k) => k !== keywordToRemove));
+  const fetchUsersEffect = async () => {
+    const q = query(collection(db, "users"));
+    const querySnapshot = await getDocs(q);
+    const users = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setResults(users);
   };
 
   const handleSearch = async () => {
-    if (keywords.length === 0) return;
+    if (keywords.length === 0) {
+      fetchUsersEffect();
+      return;
+    }
 
     const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
@@ -61,99 +64,26 @@ const Candidate = () => {
     setResults(filteredUsers);
   };
 
-  const fetchUsersEffect = async () => {
-    const q = query(collection(db, "users"));
-    const querySnapshot = await getDocs(q);
-    const users = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setResults(users);
-  };
+  const debouncedSearch = debounce(handleSearch, 300);
 
   useEffect(() => {
-    fetchUsersEffect();
+    debouncedSearch();
+  }, [keywords]); // Kör sökning när keywords uppdateras
+
+  useEffect(() => {
+    fetchUsersEffect(); // Hämta alla kandidater när komponenten laddas
   }, []);
 
-  const sendEmailNotification = async (userEmail) => {
-    try {
-      const templateParams = {
-        email_to: userEmail,
-        message:
-          "Du har ett nytt meddelande i ditt konto på AW Talent, logga in för att se det!",
-      };
-
-      await emailjs.send(
-        "service_hl7um1p",
-        "template_tjpbtzh",
-        templateParams,
-        "3ZnbOARiW9qmNJMeI"
-      );
-
-      console.log("Email sent successfully!");
-    } catch (error) {
-      console.error("Error sending email:", error);
+  const handleAddKeyword = (e) => {
+    e.preventDefault();
+    if (keyword.trim() && !keywords.includes(keyword.trim().toLowerCase())) {
+      setKeywords([...keywords, keyword.trim().toLowerCase()]);
+      setKeyword("");
     }
   };
 
-  const handleSendMessage = async () => {
-    if (!selectedCandidate || !message.trim()) return;
-
-    const adminData = JSON.parse(localStorage.getItem("admin"));
-    if (!adminData || !adminData.uid) {
-      alert("Admin UID not found.");
-      return;
-    }
-
-    const adminUid = adminData.uid;
-    const userUid = selectedCandidate.id;
-    const userEmail = selectedCandidate.email; // Förväntar att användaren har en `email`-egenskap
-
-    try {
-      const conversationId =
-        adminUid < userUid
-          ? `${adminUid}_${userUid}`
-          : `${userUid}_${adminUid}`;
-      const conversationRef = doc(db, "messages", conversationId);
-
-      const conversationSnap = await getDoc(conversationRef);
-
-      if (conversationSnap.exists()) {
-        await updateDoc(conversationRef, {
-          messages: [
-            ...conversationSnap.data().messages,
-            {
-              senderId: adminUid,
-              receiverId: userUid,
-              message,
-              timestamp: new Date(),
-            },
-          ],
-        });
-      } else {
-        await setDoc(conversationRef, {
-          participants: [adminUid, userUid],
-          messages: [
-            {
-              senderId: adminUid,
-              receiverId: userUid,
-              message,
-              timestamp: new Date(),
-            },
-          ],
-        });
-      }
-
-      // Skicka e-post till användaren
-      await sendEmailNotification(userEmail);
-
-      setMessage("");
-      setShowMessageModal(false);
-      alert("Message sent successfully!");
-    } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Error sending message. Please try again.");
-    }
+  const handleRemoveKeyword = (keywordToRemove) => {
+    setKeywords(keywords.filter((k) => k !== keywordToRemove));
   };
 
   return (
@@ -171,17 +101,18 @@ const Candidate = () => {
                   className="input-search"
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddKeyword(e);
+                    }
+                  }}
                 />
               </div>
               <div className="div-btn">
-                <div className="searchDiv">
-                  <button type="submit" className="button-candidate">
-                    <i className="uil uil-filter"></i> Ange sökord
-                  </button>
-                  <button onClick={handleSearch} className="button-candidate">
-                    Sök
-                  </button>
-                </div>
+                <button type="submit" className="button-candidate">
+                  <i className="uil uil-filter"></i> Lägg till sökord
+                </button>
               </div>
             </div>
           </form>
@@ -229,7 +160,6 @@ const Candidate = () => {
                         <button
                           className="btn btn-secondary nav-link active"
                           onClick={() => {
-                            console.log("Selected candidate:", user); // Debug log
                             setSelectedCandidate(user);
                             setShowMessageModal(true);
                           }}
@@ -253,14 +183,6 @@ const Candidate = () => {
                               <i className="mdi mdi-map-marker"></i>{" "}
                               {user.city || "Location unknown"}
                             </li>
-                            <li className="">
-                              <i className="mdi mdi-wallet"></i>
-                              {user.phoneNumber ? (
-                                <p>{user.phoneNumber}</p>
-                              ) : (
-                                <p>Inget mobilnummer</p>
-                              )}
-                            </li>
                           </ul>
                         </div>
                       </div>
@@ -280,29 +202,6 @@ const Candidate = () => {
                           </li>
                         </div>
                       </div>
-                      <div className="col-lg-2">
-                        <div className="align-items-center row">
-                          <li className="list-inline-item d-flex justify-content-end">
-                            <i className="mdi mdi-wallet"></i>
-                            {user.cvUrl ? (
-                              <a
-                                className="cv-link"
-                                href={user.cvUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <img
-                                  className="avatar-md img-thumbnail"
-                                  src="https://cdn-icons-png.freepik.com/512/36/36049.png"
-                                  alt="Icon Image"
-                                ></img>
-                              </a>
-                            ) : (
-                              <p>Ingen CV-länk</p>
-                            )}
-                          </li>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -313,31 +212,6 @@ const Candidate = () => {
           </div>
         </div>
       </div>
-
-      {showMessageModal && (
-        <div className="modal-message">
-          <div className="modal-content-message">
-            <span
-              className="close-message"
-              onClick={() => setShowMessageModal(false)}
-            >
-              &times;
-            </span>
-            <h2>
-              Send Message to {selectedCandidate?.firstName}{" "}
-              {selectedCandidate?.lastName}
-            </h2>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type your message here..."
-            />
-            <button onClick={handleSendMessage} className="btn btn-primary">
-              Skicka
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

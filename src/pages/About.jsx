@@ -25,7 +25,7 @@ const About = () => {
 
 
           </p>
-          <img src={goalPicture} alt="Om oss" className="about-image" />
+          <img src={goalPicture} alt="Om oss" className="about1-image" />
         </div>
 
        

@@ -11,8 +11,8 @@ const ApplicationHandler = () => {
     const [filteredApplications, setFilteredApplications] = useState([]);
     const [selectedApplication, setSelectedApplication] = useState(null);
     const [applicantNames, setApplicantNames] = useState({});
-    const [cvData, setCvData] = useState({}); 
-    const [searchTerm, setSearchTerm] = useState(""); 
+    const [cvData, setCvData] = useState({});
+    const [searchTerm, setSearchTerm] = useState("");
     const [cvUrls, setCvUrls] = useState({});
     const adminData = JSON.parse(localStorage.getItem('admin'));
     const loggedInAdminId = adminData?.uid || '';
@@ -160,19 +160,18 @@ const ApplicationHandler = () => {
                 </div>
 
                 <div className="central-content">
-                    {filteredApplications.length > 0 ? (
-                        <div className="applications-card">
-                            {filteredApplications.map(app => (
-                                <div key={app.id} className="application-card" onClick={() => openModal(app)}>
-                                    <h3>{app.title}</h3>
-                                    <p>Ansvarig rekryterare: <strong>{adminNames[app.adminId] || 'Laddar...'}</strong></p>
-                                    <p>Antal sökande: {app.applicants.length}</p>
-                                </div>
-                            ))}
-                        </div>
+                    {filteredApplications?.length > 0 ? (
+                        filteredApplications.map((app) => (
+                            <div key={app.id} className="application-card" onClick={() => openModal(app)}>
+                                <h3>{app.title}</h3>
+                                <p>Ansvarig rekryterare: <strong>{adminNames[app.adminId] || 'Laddar...'}</strong></p>
+                                <p>Antal sökande: {app.applicants?.length || 0}</p> {/* Undvik undefined */}
+                            </div>
+                        ))
                     ) : (
                         <p>Inga ansökningar hittades.</p>
                     )}
+
                 </div>
             </div>
 

@@ -20,7 +20,9 @@ import Contact from './pages/Contact';
 import About from './pages/About';
 import Ai from './pages/Ai';
 
+
 const App = () => {
+
   const router = createBrowserRouter([
     {
       path: '/',

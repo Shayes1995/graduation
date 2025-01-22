@@ -8,10 +8,7 @@ body {
     max-width: 1000px;
     margin: 40px auto;
     padding: 20px; 
-    border: 1px solid #ccc;
-    border-radius: 8px;
     background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 50px;
     display: flex;
     flex-direction: column;
@@ -78,6 +75,12 @@ body {
     border-color: #004a99;
 }
 
+.info-image {
+    max-width: 100%; 
+    height: auto;   
+    display: block;  
+    margin-top: 20px; 
+  }
   
 
 

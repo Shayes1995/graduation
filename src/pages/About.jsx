@@ -1,5 +1,10 @@
 import React from "react";
 import './About.css';
+import goalPicture from "./images/our-goal.jpg";
+import historyPicture from "./images/our-history.jpg";
+import firstProfilePicture from "./images/profile-man.png";
+import secondProfilePicture from "./images/profile-woman.png";
+
 
 const About = () => {
   return (
@@ -20,10 +25,12 @@ const About = () => {
 
 
           </p>
+          <img src={goalPicture} alt="Om oss" className="about1-image" />
         </div>
 
        
         <div className="col-md-6">
+        <img src={historyPicture} alt="Om oss" className="about-image" />
           <h3>Vårt mål</h3>
           <p>
           Målet med AWTalent är att bygga en modern, användarvänlig och säker webbapplikation som förenklar och automatiserar delar av rekryteringsprocessen för både kandidater och administratörer. Plattformen kommer att erbjuda ett enkelt sätt för kandidater att söka jobb och ge administratörer möjlighet att effektivt hantera jobbannonser och ansökningar.
@@ -40,47 +47,47 @@ const About = () => {
         <div className="about-row">
           <div className="col-md-4 text-center mb-4">
             <img
-              src="https://via.placeholder.com/150"
+              src={secondProfilePicture}
               alt="Team Member 1"
               className="rounded-circle mb-2"
               width="150"
               height="150"
             />
             <h5>Evelina Enqvist</h5>
-            <p>Arbetsroll</p>
+            <p>Grundare</p>
           </div>
           <div className="col-md-4 text-center mb-4">
             <img
-              src="https://via.placeholder.com/150"
+              src={firstProfilePicture}
               alt="Team Member 2"
               className="rounded-circle mb-2"
               width="150"
               height="150"
-            />
+            /> 
             <h5>Kevin Badwi</h5>
-            <p>Arbetsroll</p>
+            <p>Grundare</p>
           </div>
           <div className="col-md-4 text-center mb-4">
             <img
-              src="https://via.placeholder.com/150"
+              src={firstProfilePicture}
               alt="Team Member 3"
               className="rounded-circle mb-2"
               width="150"
               height="150"
             />
             <h5>Patrik Skantz</h5>
-            <p>Arbetsroll</p>
+            <p>Grundare</p>
           </div>
           <div className="col-md-4 text-center mb-4">
             <img
-              src="https://via.placeholder.com/150"
+              src={firstProfilePicture}
               alt="Team Member 4"
               className="rounded-circle mb-2"
               width="150"
               height="150"
             />
             <h5>Shayan Sadr</h5>
-            <p>Arbetsroll</p>
+            <p>Grundare</p>
           </div>
         </div>
       </div>

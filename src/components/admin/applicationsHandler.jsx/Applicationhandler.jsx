@@ -8,6 +8,8 @@ const ApplicationHandler = () => {
     const [adminNames, setAdminNames] = useState({});
     const [showAllApplications, setShowAllApplications] = useState(false);
     const [filteredApplications, setFilteredApplications] = useState([]);
+    const [selectedApplication, setSelectedApplication] = useState(null);
+    const [applicantNames, setApplicantNames] = useState([]);
 
     const adminData = JSON.parse(localStorage.getItem('admin'));
     const loggedInAdminId = adminData?.uid || '';
@@ -48,6 +50,75 @@ const ApplicationHandler = () => {
 
         setAdminNames(newAdminNames);
     };
+    const fetchApplicantDetails = async (applicantIds) => {
+        if (!Array.isArray(applicantIds)) {
+            console.error("Fel: applicantIds är inte en array", applicantIds);
+            return;
+        }
+
+        const newApplicantDetails = { ...applicantNames }; 
+
+       
+        const missingIds = applicantIds.filter(userId => userId && !newApplicantDetails[userId]);
+        if (missingIds.length === 0) return;
+
+        try {
+            const fetchedDetails = await Promise.all(
+                missingIds.map(async (uid) => {
+                    const userRef = doc(db, 'users', uid);
+                    const userSnap = await getDoc(userRef);
+
+                    if (userSnap.exists()) {
+                        const userData = userSnap.data();
+                        return {
+                            id: uid,
+                            ...userData, // hämta  användarinformation
+                        };
+                    } else {
+                        return {
+                            id: uid,
+                            firstName: "Okänd",
+                            lastName: "",
+                            email: "Ej tillgänglig",
+                            phoneNumber: "Ej tillgänglig",
+                            city: "Ej tillgänglig",
+                            skills: [],
+                            profilePicUrl: "",
+                        };
+                    }
+                })
+            );
+
+            // uoodatera state med hämtade detaljer
+            fetchedDetails.forEach(user => {
+                newApplicantDetails[user.id] = user;
+            });
+
+            setApplicantNames(newApplicantDetails);
+        } catch (error) {
+            console.error('Fel vid hämtning av användardata:', error);
+        }
+    };
+
+    const openModal = (application) => {
+        setSelectedApplication(application);
+
+        console.log("Applicants-data:", application.applicants);
+
+          // hämta alla sökandes ID:n
+        const applicantIds = application.applicants?.map(applicant => applicant.userId).filter(Boolean) || [];
+
+        fetchApplicantDetails(applicantIds);
+    };
+
+
+
+
+
+    const closeModal = () => {
+        setSelectedApplication(null);
+        setApplicantNames([]);
+    };
 
     useEffect(() => {
         if (showAllApplications) {
@@ -81,7 +152,7 @@ const ApplicationHandler = () => {
                     {filteredApplications.length > 0 ? (
                         <div className="applications-card">
                             {filteredApplications.map(app => (
-                                <div key={app.id} className="application-card">
+                                <div key={app.id} className="application-card" onClick={() => openModal(app)}>
                                     <h3>{app.title}</h3>
                                     <p>Ansvarig rekryterare: <strong>{adminNames[app.adminId] || 'Laddar...'}</strong></p>
                                     <p>Antal sökande: {app.applicants.length}</p>
@@ -93,6 +164,55 @@ const ApplicationHandler = () => {
                     )}
                 </div>
             </div>
+
+            {selectedApplication && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="top-header">
+                            <h2>{selectedApplication.title}</h2>
+                            <input type="text" />
+                            <button>Filtrera</button>
+                        </div>
+                        <h3>Sökande:</h3>
+
+                        <ul>
+                            {selectedApplication && (
+                                <div className="modal-overlay">
+                                    <div className="modal-content">
+                                        <div className="top-header">
+                                            <h2>{selectedApplication.title}</h2>
+                                            <input type="text" />
+                                            <button>Filtrera</button>
+                                        </div>
+
+                                        {selectedApplication.applicants.map((applicant, index) => (
+                                            <div key={index} className="applicant-cards">
+                                                <div className="img-container-profile">
+                                                    <img src={applicantNames[applicant.userId]?.profilePicUrl} alt="Profilbild" />
+                                                </div>
+                                                <div className="user-info">
+                                                    <p><strong>Namn:</strong> {applicantNames[applicant.userId]?.firstName} {applicantNames[applicant.userId]?.lastName}</p>
+                                                    <p><strong>Email:</strong> {applicantNames[applicant.userId]?.email}</p>
+                                                    <p><strong>Telefon:</strong> {applicantNames[applicant.userId]?.phoneNumber}</p>
+                                                    <p><strong>Stad:</strong> {applicantNames[applicant.userId]?.city}</p>
+                                                </div>
+                                                <div className="">
+                                                    <p><strong>Skills:</strong> {applicantNames[applicant.userId]?.skills?.join(", ") || "Inga"}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        <button className="close-button" onClick={closeModal}>Stäng</button>
+                                    </div>
+                                </div>
+                            )}
+
+
+                        </ul>
+                        <button className="close-button" onClick={closeModal}>Stäng</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

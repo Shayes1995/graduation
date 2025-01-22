@@ -118,13 +118,13 @@ const Logincomponent = () => {
                     <p className='center'>Logga in på ditt AcademicWorks konto</p>
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label>E-post *</label>
-                            <input type="email" className="input-login" value={email} onChange={(e) => setEmail(e.target.value)} />
+                            <label htmlFor="email">E-post *</label>
+                            <input id="email" type="email" className="input-login" value={email} onChange={(e) => setEmail(e.target.value)} />
                             <small>Email must be in the format: example@domain.com</small>
                         </div>
                         <div className="form-group">
-                            <label>Lösenord *</label>
-                            <input type="password" className="input-login" value={password} onChange={(e) => setPassword(e.target.value)} />
+                            <label htmlFor="password">Lösenord *</label>
+                            <input id="password" type="password" className="input-login" value={password} onChange={(e) => setPassword(e.target.value)} />
                         </div>
                         {error && <p style={{ color: 'red' }}>{error}</p>}
                         <div className="form-group">

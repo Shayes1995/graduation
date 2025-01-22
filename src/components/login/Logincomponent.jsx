@@ -17,10 +17,18 @@ const Logincomponent = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
         if (!email) {
             setError("Please enter your email");
             return;
         }
+
+        if (!emailPattern.test(email)) {
+            setError('Invalid email format! Email must be in the format: example@domain.com');
+            return;
+        }
+
         if (!password) {
             setError("Please enter your password");
             return;
@@ -112,6 +120,7 @@ const Logincomponent = () => {
                         <div className="form-group">
                             <label>E-post *</label>
                             <input type="email" className="input-login" value={email} onChange={(e) => setEmail(e.target.value)} />
+                            <small>Email must be in the format: example@domain.com</small>
                         </div>
                         <div className="form-group">
                             <label>Lösenord *</label>

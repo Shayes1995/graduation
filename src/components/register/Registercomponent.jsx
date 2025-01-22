@@ -27,6 +27,19 @@ const RegisterComponent = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+
+        if (!emailPattern.test(formData.email)) {
+            alert('Invalid email format! Email must be in the format: example@domain.com');
+            return;
+        }
+
+        if (!passwordPattern.test(formData.password)) {
+            alert('Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long.');
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
             alert('Passwords do not match!');
             return;
@@ -90,6 +103,7 @@ const RegisterComponent = () => {
                     <div className="input-group rw-input">
                         <label htmlFor="password">Lösenord</label>
                         <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
+                        <small>Password must contain at least one uppercase letter, one lowercase letter, and be at least 6 characters long.</small>
                     </div>
                     <div className="input-group rw-input">
                         <label htmlFor="confirmPassword">Bekräfta lösenord</label>

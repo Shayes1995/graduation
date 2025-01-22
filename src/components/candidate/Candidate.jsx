@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
-import {
-  collection,
-  query,
-  getDocs,
-} from "firebase/firestore";
-
+import { collection, query, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase/configfb";
+import { supabase } from "../../supabase/Supabase";
 import emailjs from "@emailjs/browser";
-
 import "./Candidate.css";
-
+ 
 const Candidate = () => {
   const [keyword, setKeyword] = useState("");
   const [keywords, setKeywords] = useState([]);
   const [results, setResults] = useState([]);
+  const [cvData, setCvData] = useState({});
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [message, setMessage] = useState("");
   const [showMessageModal, setShowMessageModal] = useState(false);
-
+  
+ 
+  // Debounce function for search input
   const debounce = (func, delay) => {
     let timeout;
     return (...args) => {
@@ -25,7 +23,8 @@ const Candidate = () => {
       timeout = setTimeout(() => func(...args), delay);
     };
   };
-
+ 
+  // Fetch all users from Firestore
   const fetchUsersEffect = async () => {
     const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
@@ -35,20 +34,41 @@ const Candidate = () => {
     }));
     setResults(users);
   };
-
+ 
+  // Fetch CV data (PDF URL, CV text) for a given user
+  const fetchCvData = async (userId) => {
+    const { data, error } = await supabase
+      .from("user_pdfs")
+      .select("pdf_url, cv_text")
+      .eq("user_id", userId)
+      .single();
+    if (!error && data) {
+      setCvData((prev) => ({
+        ...prev,
+        [userId]: { pdfUrl: data.pdf_url, cvText: data.cv_text },
+      }));
+    }
+  };
+ 
+  useEffect(() => {
+    // Fetch CV data for each user when results change
+    results.forEach((user) => fetchCvData(user.id));
+  }, [results]);
+ 
+  // Search function with keyword matching
   const handleSearch = async () => {
     if (keywords.length === 0) {
       fetchUsersEffect();
       return;
     }
-
+ 
     const q = query(collection(db, "users"));
     const querySnapshot = await getDocs(q);
     const users = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
-
+ 
     const filteredUsers = users.filter((user) => {
       const userKeywords = [
         user.firstName?.toLowerCase() || "",
@@ -60,32 +80,54 @@ const Candidate = () => {
         userKeywords.some((userKeyword) => userKeyword.includes(k))
       );
     });
-
+ 
     setResults(filteredUsers);
   };
-
+ 
+  // Debounced version of the search function
   const debouncedSearch = debounce(handleSearch, 300);
-
+ 
   useEffect(() => {
     debouncedSearch();
-  }, [keywords]); // Kör sökning när keywords uppdateras
-
+  }, [keywords]);
+ 
   useEffect(() => {
-    fetchUsersEffect(); // Hämta alla kandidater när komponenten laddas
+    fetchUsersEffect();
   }, []);
-
+ 
   const handleAddKeyword = (e) => {
     e.preventDefault();
     if (keyword.trim() && !keywords.includes(keyword.trim().toLowerCase())) {
       setKeywords([...keywords, keyword.trim().toLowerCase()]);
-      setKeyword("");
+      setKeyword(""); // Reset the search input after adding
     }
   };
-
+ 
   const handleRemoveKeyword = (keywordToRemove) => {
     setKeywords(keywords.filter((k) => k !== keywordToRemove));
   };
 
+  const handleSendMessage = async () => {
+    if (!selectedCandidate || !message.trim()) return;
+ 
+    console.log('Selected candidate:', selectedCandidate); // Debug log
+ 
+    try {
+      await addDoc(collection(db, 'messages'), {
+        senderId: 'admin-id', // Replace with actual admin ID
+        receiverId: selectedCandidate.id,
+        message,
+        timestamp: serverTimestamp(),
+      });
+      setMessage("");
+      setShowMessageModal(false);
+      alert('Message sent successfully!');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Error sending message. Please try again.');
+    }
+  };
+ 
   return (
     <section className="section homePage">
       <div className="candidatePage">
@@ -95,7 +137,6 @@ const Candidate = () => {
               <div className="filler-job-form">
                 <i className="uil uil-briefcase-alt"></i>
                 <input
-                  id=""
                   placeholder="Enter keywords (e.g., name, city, skill)"
                   type="search"
                   className="input-search"
@@ -110,9 +151,14 @@ const Candidate = () => {
                 />
               </div>
               <div className="div-btn">
-                <button type="submit" className="button-candidate">
-                  <i className="uil uil-filter"></i> Lägg till sökord
-                </button>
+                <div className="searchDiv">
+                  <button type="submit" className="button-candidate">
+                    <i className="uil uil-filter"></i> Lägg till sökord
+                  </button>
+                  {/* <button onClick={handleSearch} className="button-candidate">
+                    Sök
+                  </button> */}
+                </div>
               </div>
             </div>
           </form>
@@ -137,14 +183,11 @@ const Candidate = () => {
           <div className="candidate-list">
             <p className="results-p">{results.length} träffar</p>
             {results.length > 0 ? (
-              results.map((user, index) => (
-                <div
-                  key={index}
-                  className="candidate-list-box bookmark-post card"
-                >
+              results.map((user) => (
+                <div key={user.id} className="candidate-list-box bookmark-post card">
                   <div className="card-body">
                     <div className="align-items-center row">
-                      <div className="col-auto">
+                      <div className="col-lg-2 ml-0 px-0">
                         <div className="candidate-list-images">
                           <a href="#">
                             <img
@@ -167,40 +210,82 @@ const Candidate = () => {
                           Skicka meddelande
                         </button>
                       </div>
-                      <div className="col-lg-3">
-                        <div className="candidate-list-content mt-3 mt-lg-0">
-                          <h5 className="fs-19 mb-0">
-                            <a className="primary-link" href="#">
-                              {user.firstName} {user.lastName}
-                            </a>
-                            <span className="badge bg-warning ms-1">
+                      <div className="col-lg-2 pr-10 px-0 justify-content-start">
+                        <h5 className="fs-19 mb-0">
+                          <a className="primary-link" href="#">
+                            {user.firstName} {user.lastName}
+                          </a>
+                          {/* <span className="badge bg-warning ms-1">
                               <i className="mdi mdi-star align-middle"></i>
                               {user.rating || "N/A"}
-                            </span>
-                          </h5>
-                          <ul className="list-inline mb-0 text-muted mt-3">
-                            <li className="list-inline-item">
-                              <i className="mdi mdi-map-marker"></i>{" "}
-                              {user.city || "Location unknown"}
+                            </span> */}
+                        </h5>
+                        <ul className="list-inline mb-0 text-muted mt-3">
+                          <li className="list-inline-item">
+                            <i className="mdi mdi-map-marker"></i> {user.city || "Location unknown"}
+                          </li>
+                          <li className="">
+                              <i className="mdi mdi-wallet"></i>
+                              {user.phoneNumber ? (
+                                <p>{user.phoneNumber}</p>
+                              ) : (
+                                <p>Inget mobilnummer</p>
+                              )}
                             </li>
-                          </ul>
-                        </div>
+                        </ul>
                       </div>
-                      <div className="col-lg-3">
+                      <div className="col-lg-4">
                         <div className="align-items-center">
                           <li className="list-inline-item d-flex justify-content-start">
                             <div className="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
                               {user.skills?.map((skill, idx) => (
-                                <span
-                                  key={idx}
-                                  className="badge bg-soft-secondary fs-14 mt-1"
-                                >
+                                <span key={idx} className="badge bg-soft-secondary fs-14 mt-1">
                                   {skill}
                                 </span>
                               ))}
                             </div>
                           </li>
                         </div>
+                      </div>
+                      <div className="col-lg-2">
+                        {cvData[user.id]?.pdfUrl && (
+                          <div className="button-box">
+                            <button
+                              onClick={async () => {
+                                try {
+                                  const filePath = cvData[user.id].pdfUrl.replace(
+                                    "https://eebbwtkghyyqjlphiuer.supabase.co/storage/v1/object/public/pdfs/",
+                                    ""
+                                  );
+                                  const { data, error } = await supabase.storage
+                                    .from("pdfs")
+                                    .download(filePath);
+                                  if (error) {
+                                    console.error("❌ Kunde inte ladda ner PDF:", error);
+                                    return;
+                                  }
+                                  const url = URL.createObjectURL(data);
+                                  const a = document.createElement("a");
+                                  a.href = url;
+                                  a.download = filePath;
+                                  document.body.appendChild(a);
+                                  a.click();
+                                  document.body.removeChild(a);
+                                  URL.revokeObjectURL(url);
+                                } catch (err) {
+                                  console.error("❌ Fel vid nedladdning av PDF:", err);
+                                }
+                              }}
+                              className="btn-download-cv"
+                            >
+                              <img
+                                className="avatar-md img-thumbnail"
+                                src="https://cdn-icons-png.freepik.com/512/36/36049.png"
+                                alt="Download Icon"
+                              />
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -212,8 +297,46 @@ const Candidate = () => {
           </div>
         </div>
       </div>
+ 
+      {showMessageModal && (
+        <div className="modal-message">
+          <div className="modal-content">
+            <span className="close-btn" onClick={() => setShowMessageModal(false)}>&times;</span>
+            <h4>Send Message to {selectedCandidate?.firstName}</h4>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your message here..."
+              rows="4"
+            />
+            <button
+              onClick={() => {
+                // Add email sending logic here
+                emailjs.send("service_hl7um1p", "template_tjpbtzh", {
+                  to_name: selectedCandidate?.firstName,
+                  message,
+                },
+                "3ZnbOARiW9qmNJMeI"
+                
+              )
+                .then((response) => {
+                  console.log("Message sent successfully", response);
+                  handleSendMessage();
+                })
+                .catch((error) => {
+                  console.error("Error sending message", error);
+                });
+                setShowMessageModal(false);
+              }}
+              className="btn btn-primary mt-2"
+            >
+              Send Message
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
-
+ 
 export default Candidate;

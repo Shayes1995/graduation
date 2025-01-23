@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: '',
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
 });
+
 
 const assistantId = 'asst_FmJSWXe6z9lLsJdPVbCKtH1a';
 const fileId = 'file-JfBdqCXepeQXAnT1PCXpcc';

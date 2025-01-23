@@ -58,6 +58,17 @@ const Adslist = () => {
                 return 'https://cdn.academicwork.com/business-areas/securities.png';
             case 'kundservice':
                 return 'https://cdn.academicwork.com/business-areas/support.png';
+
+            case 'teknik':
+                return 'https://cdn.academicwork.com/business-areas/rocket.png';
+            case 'industri':
+                return 'https://cdn.academicwork.com/business-areas/construction.png';
+            case 'administration':
+                return 'https://cdn.academicwork.com/business-areas/spread_love.png';
+            case 'lager':
+                return 'https://cdn.academicwork.com/business-areas/mini_truck.png';
+            case 'marknadsföring':
+                return 'https://cdn.academicwork.com/business-areas/megafon.png';
             default:
                 return 'https://cdn.academicwork.com/business-areas/default.png';
         }
@@ -130,21 +141,21 @@ const Adslist = () => {
 
     const handleApply = async () => {
         if (!selectedAd) return;
-    
+
         try {
             const auth = getAuth();
             const user = auth.currentUser || JSON.parse(localStorage.getItem('user'));
-    
+
             if (!user) {
                 console.log('Logga in krävs');
                 navigate('/login');
                 return;
             }
 
-            
-    
+
+
             const applicationRef = doc(collection(db, 'applications'));
-    
+
             const applicationData = {
                 userId: user.uid,
                 adId: selectedAd.id,  // ✅ Inkludera annons-id
@@ -156,14 +167,14 @@ const Adslist = () => {
                 typeOfAssignment: selectedAd.typeOfAssignment,
                 createdAt: new Date(),
             };
-    
+
             // 🔹 Steg 1: Lägg till i "applications"
             await setDoc(applicationRef, applicationData);
-    
+
             // 🔹 Steg 2: Uppdatera eller skapa "collectionapplications"
             const collectionApplicationRef = doc(db, 'collectionapplications', selectedAd.id);
             const collectionApplicationSnap = await getDoc(collectionApplicationRef);
-    
+
             if (collectionApplicationSnap.exists()) {
                 // 🔸 Uppdatera befintligt dokument
                 await setDoc(collectionApplicationRef, {
@@ -183,16 +194,16 @@ const Adslist = () => {
                     applicants: [applicationData]  // ✅ Endast användardata i arrayen
                 });
             }
-    
+
             console.log('Ansökan sparad korrekt i båda databaserna');
             setHasApplied(true);
             setShowModal(false);
-    
+
         } catch (error) {
             console.error("Fel vid ansökan:", error);
         }
     };
-    
+
 
 
     return (

@@ -210,9 +210,9 @@ const ApplicationHandler = () => {
                                                 <div className="info-box">
                                                     <div className="col-lg-3 info-box-user">
                                                         <h5 className="fs-19 mb-0">
-                                                            <a className="primary-link" href="#">
-                                                                {userData.firstName} {userData.lastName}
-                                                            </a>
+
+                                                            {userData.firstName} {userData.lastName}
+
                                                         </h5>
                                                         <ul className="list-inline mb-0 text-muted mt-3">
                                                             <li className="list-inline-item">

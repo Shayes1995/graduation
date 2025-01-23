@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, query, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, getDocs, addDoc, arrayUnion, updateDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase/configfb";
 import { supabase } from "../../supabase/Supabase";
 import emailjs from "@emailjs/browser";
@@ -107,26 +107,62 @@ const Candidate = () => {
     setKeywords(keywords.filter((k) => k !== keywordToRemove));
   };
 
-  const handleSendMessage = async () => {
-    if (!selectedCandidate || !message.trim()) return;
- 
-    console.log('Selected candidate:', selectedCandidate); // Debug log
- 
-    try {
-      await addDoc(collection(db, 'messages'), {
-        senderId: 'admin-id', // Replace with actual admin ID
-        receiverId: selectedCandidate.id,
-        message,
-        timestamp: serverTimestamp(),
+
+
+const handleSendMessage = async () => {
+  if (!selectedCandidate || !message.trim()) return;
+
+  // Hämta adminens info från localStorage
+  const adminData = JSON.parse(localStorage.getItem("admin"));
+  if (!adminData || !adminData.uid || !adminData.firstName) {
+    console.error("Admin info saknas i localStorage");
+    return;
+  }
+
+  const adminId = adminData.uid;
+  const adminName = adminData.firstName;
+  const userId = selectedCandidate.id;
+
+  // Skapa unikt konversations-ID baserat på adminId och userId
+  const conversationId = adminId < userId ? `${adminId}_${userId}` : `${userId}_${adminId}`;
+
+  try {
+    // Kolla om konversationen redan finns
+    const conversationRef = doc(db, "messages", conversationId);
+    const conversationSnap = await getDoc(conversationRef);
+
+    const newMessage = {
+      senderId: adminId,
+      senderName: adminName,
+      message,
+      timestamp: new Date().toISOString(), 
+    };
+
+    if (!conversationSnap.exists()) {
+      // omm konversationen inte finns, skapa en ny
+      await setDoc(conversationRef, {
+        participants: [
+          { id: adminId, name: adminName }, // Admin info
+          { id: userId, name: selectedCandidate.firstName }, // Användarinfo
+        ],
+        messages: [newMessage], // skapa första meddelandet
       });
-      setMessage("");
-      setShowMessageModal(false);
-      alert('Message sent successfully!');
-    } catch (error) {
-      console.error('Error sending message:', error);
-      alert('Error sending message. Please try again.');
+    } else {
+      // uppdatera befintlig konversation om de finns
+      await updateDoc(conversationRef, {
+        messages: arrayUnion(newMessage),
+      });
     }
-  };
+
+    setMessage("");
+    setShowMessageModal(false);
+    alert("Message sent successfully!");
+  } catch (error) {
+    console.error("Error sending message:", error);
+    alert("Error sending message. Please try again.");
+  }
+};
+
  
   return (
     <section className="section homePage">

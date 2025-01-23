@@ -15,6 +15,7 @@ import Candidate from './components/candidate/Candidate';
 import DetailsAds from './pages/DetailsAds';
 import AdminApplications from './pages/AdminApplications';
 import Inbox from './pages/Inbox'; // Import Inbox component
+import Companies from './pages/Companies'; // Import Companies component
 
 import Contact from './pages/Contact';
 import About from './pages/About';
@@ -102,6 +103,10 @@ const App = () => {
         {
           path: 'inbox', // Add route for inbox
           element: <Inbox />
+        },
+        {
+          path: 'companies',
+          element: <Companies /> // Add route for companies
         },
       ]
     }

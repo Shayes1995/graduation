@@ -49,7 +49,9 @@ const App = () => {
         {
           path: 'ai',
           element: (
-            <Ai />
+            <ProtectedRoute requiredRole="admin">
+              <Ai />
+            </ProtectedRoute>
           )
         },
         {

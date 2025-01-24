@@ -448,14 +448,17 @@ const Adslist = () => {
                                     ))}
                                 </ul>
                             </div>
-                            <div className="about-job">
-                                <h2>Vi söker dig som</h2>
-                                <ul>
-                                    {selectedAd.requirements.map((task, index) => (
-                                        <li className='li-modal' key={index}>{task}</li>
-                                    ))}
-                                </ul>
-                            </div>
+                            {selectedAd.requirements && selectedAd.requirements.length > 0 && (
+                                <div className="about-job">
+                                    <h2>Vi söker dig som</h2>
+                                    <ul>
+                                        {selectedAd.requirements.map((task, index) => (
+                                            <li className='li-modal' key={index}>{task}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
                             {selectedAd.personalMerits && selectedAd.personalMerits.length > 0 ? (
                                 <div className="about-job">
                                     <h3>Det är meriterande om du</h3>
